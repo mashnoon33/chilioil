@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { Loader2 } from "lucide-react"
 import { DiffEditor } from "@monaco-editor/react"
+import { register } from "@/components/editor/monaco/faux-language-server"
 
 import { api } from "@/trpc/react"
 import { RangeSlider } from "@/components/ui/range"
@@ -64,11 +65,22 @@ export default function DiffPage() {
           <DiffEditor
             original={leftRecipe.markdown}
             modified={rightRecipe.markdown}
-            language="markdown"
+            language="recipe"
+            theme="recipe-theme"
             options={{
               readOnly: true,
               enableSplitViewResizing: false,
               renderSideBySide: false,
+              minimap: { enabled: true },
+              scrollBeyondLastLine: false,
+              automaticLayout: true,
+              fontSize: 14,
+              lineNumbers: "on",
+              renderWhitespace: "selection",
+              wordWrap: "on"
+            }}
+            beforeMount={(monaco) => {
+              register(monaco);
             }}
           />
         ) : (
