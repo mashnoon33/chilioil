@@ -22,13 +22,13 @@ function parseIngredient(text: string): Ingredient {
   }
   
   const [fullQuantity, amount] = quantityMatch;
-  const [quantity, unit = ""] = amount.trim().split(/\s+/, 2);
+  const [quantity, unit = "unit"] = amount.trim().split(/\s+/, 2);
   
   // Remove the quantity part and parse the rest
   const remainingText = cleanText.slice(fullQuantity.length).trim();
   
   // Extract name and optional description
-  const descriptionMatch = remainingText.match(/^(.*?)(?:\s*\*\((.*?)\)\*)?$/);
+  const descriptionMatch = remainingText.match(/^(.*?)(?:\s*\*\((.*?)\)\*)?(?:\s*!!)?$/);
   if (!descriptionMatch) {
     throw new Error(`Invalid ingredient format (invalid name/description): ${text}`);
   }
@@ -50,7 +50,8 @@ function parseIngredient(text: string): Ingredient {
     quantity: normalizedQuantity,
     unit: unit.trim(),
     name: nameParenMatch ? nameParenMatch[1].trim() : name.trim(),
-    displayUnit: unit.trim() // Adding required displayUnit field
+    displayUnit: unit.trim(),
+    important: text.includes("!!")
   };
   
   if (description) {

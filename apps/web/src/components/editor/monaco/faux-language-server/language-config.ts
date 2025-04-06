@@ -14,11 +14,10 @@ export function registerLanguageConfiguration({ monaco }: RecipeLanguageServerDe
         // Headers
         [/^#\s.*$/, 'recipe-header'],
         [/^==\s.*$/, 'recipe-section'],
-
+        [/^-.*!!.*$/, 'recipe-important'],
         // Ingredients
-        [/^-\s\[.*?\]/, 'recipe-quantity'],
+        [/^-\s\[[^\]]*\]/, 'recipe-quantity'],
         [/\*\(.*?\)\*/, 'recipe-description'],
-        
         // Instructions
         [/^\d+\.\s/, 'recipe-step-number'],
       ]
@@ -30,7 +29,6 @@ export function registerLanguageConfiguration({ monaco }: RecipeLanguageServerDe
     base: 'vs',
     inherit: true,
     rules: [
-      // Frontmatter
       { token: 'recipe-frontmatter-delimiter', foreground: '808080', fontStyle: 'bold' },
       { token: 'recipe-frontmatter-key', foreground: '0451A5', fontStyle: 'bold' },
       { token: 'recipe-frontmatter-colon', foreground: '0451A5' },
@@ -41,6 +39,7 @@ export function registerLanguageConfiguration({ monaco }: RecipeLanguageServerDe
       { token: 'recipe-quantity', foreground: '4EC9B0' },
       { token: 'recipe-description', foreground: '608B4E', fontStyle: 'italic' },
       { token: 'recipe-step-number', foreground: 'CE9178' },
+      { token: 'recipe-important', foreground: 'FF0000', fontStyle: 'bold' },
     ],
     colors: {
       'editor.background': '#f7f7f7',

@@ -4,6 +4,7 @@ export type Ingredient = {
   displayUnit: string;
   name: string;
   description?: string;
+  important?: boolean;
 };
 
 export type RecipeSection = {

@@ -15,14 +15,16 @@
     "build": "tsup src/index.ts --format esm --dts",
     "dev": "tsup src/index.ts --format esm --dts --watch",
     "lint": "eslint \"src/**/*.ts*\"",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "test": "vitest"
   },
   "devDependencies": {
     "@repo/typescript-config": "*",
     "@types/node": "^20.0.0",
     "eslint": "^8.0.0",
     "tsup": "^8.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
   },
   "dependencies": {
     "rehype-stringify": "^10.0.1",

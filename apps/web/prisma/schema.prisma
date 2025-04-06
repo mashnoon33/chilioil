@@ -117,6 +117,7 @@ model RecipeIngredient {
     recipeId     String
     ingredientId String
     quantity     String?
+    important    Boolean         @default(false)
     unit         String?
     description  String?
     recipe       Recipe          @relation(fields: [recipeId], references: [id], onDelete: Cascade)

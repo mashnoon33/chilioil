@@ -52,6 +52,7 @@ async function handleRecipeIngredients(
         unit: ing.unit || null,
         description: ing.description || null,
         metadataId: metadataId,
+        important: ing.important || false,
       },
       update: {
         quantity: ing.quantity || null,
@@ -69,13 +70,28 @@ async function deleteRecipeIngredients(ctx: Context, recipeId: string) {
     where: { recipeId: recipeId },
   });
 }
-
-// Common recipe include pattern
-const recipeInclude = {
+// Common recipe select pattern
+const recipeSelect = {
+  id: true,
+  markdown: true,
+  version: true,
+  public: true,
+  blogId: true,
   ingredients: {
-    include: {
-      ingredient: true,
+    where: {
+      important: true
     },
+    select: {
+      ingredient: {
+        select: {
+          id: true,
+          name: true
+        }
+      },
+      quantity: true,
+      unit: true,
+      description: true
+    }
   },
   metadata: true,
 };
@@ -87,7 +103,30 @@ async function getRecipes(ctx: Context, blogId: string, publicOnly: boolean = fa
       blogId,
       ...(publicOnly ? { public: true } : {})
     },
-    include: recipeInclude,
+    select: {
+      id: true,
+      markdown: true,
+      version: true,
+      public: true,
+      blogId: true,
+      ingredients: {
+        where: {
+          important: true
+        },
+        select: {
+          ingredient: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
+          quantity: true,
+          unit: true,
+          description: true
+        }
+      },
+      metadata: true
+    }
   });
 }
 
@@ -99,7 +138,7 @@ async function getRecipeById(ctx: Context, id: string, blogId: string, publicOnl
       blogId,
       ...(publicOnly ? { public: true } : {})
     },
-    include: recipeInclude,
+    select: recipeSelect,
   });
 }
 
@@ -165,8 +204,8 @@ export const recipeRouter = createTRPCRouter({
             },
           },
         },
-        include: {
-          metadata: true,
+        select: {
+          ...recipeSelect,
           history: true,
         },
       });
@@ -195,13 +234,20 @@ export const recipeRouter = createTRPCRouter({
           id: input.id,
           blogId: input.blogId,
         },
-        include: {
-          blog: true,
+        select: {
+          blog: {
+            select: {
+              userId: true
+            }
+          },
           history: {
             orderBy: {
               version: 'desc'
             },
-            take: 1
+            take: 1,
+            select: {
+              version: true
+            }
           }
         },
       });
@@ -243,8 +289,8 @@ export const recipeRouter = createTRPCRouter({
             },
           },
         },
-        include: {
-          metadata: true,
+        select: {
+          ...recipeSelect,
           history: true,
         },
       });
