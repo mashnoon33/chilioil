@@ -1,24 +1,33 @@
 "use client"
 import Editor, { OnMount, useMonaco } from '@monaco-editor/react';
 import type * as Monaco from 'monaco-editor';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import { defaultRecipe } from './const';
 import { register, validate } from './faux-language-server';
-
-
-
 
 export interface RecipeEditorProps {
   initialValue?: string;
   onChange?: (value: string | undefined) => void;
 }
 
-export const RecipeEditor: React.FC<RecipeEditorProps> = ({ 
+export interface RecipeEditorRef {
+  setValue: (value: string) => void;
+}
+
+export const RecipeEditor = forwardRef<RecipeEditorRef, RecipeEditorProps>(({ 
   initialValue,
   onChange 
-}) => {
+}, ref) => {
   const monaco = useMonaco();
   const editorRef = useRef<Monaco.editor.IStandaloneCodeEditor | null>(null);
+
+  useImperativeHandle(ref, () => ({
+    setValue: (value: string) => {
+      if (editorRef.current) {
+        editorRef.current.setValue(value);
+      }
+    }
+  }));
 
   useEffect(() => {
     if (monaco) {
@@ -69,6 +78,8 @@ export const RecipeEditor: React.FC<RecipeEditorProps> = ({
       }}
     />
   );
-};
+});
+
+RecipeEditor.displayName = 'RecipeEditor';
 
 export default RecipeEditor; 

@@ -12,7 +12,7 @@ interface RecipeProps {
 export const RecipeComponent: React.FC<RecipeProps> = ({ recipe, version }) => {
   return (
     <div className="flex flex-1 flex-col gap-1 pt-10 md:pt-20 h-[100%]px-4  @container">
-      <div className=" max-w-xl @lg:max-w-3xl mx-auto">
+      <div className=" max-w-xl @lg:max-w-4xl mx-auto">
         <div>
           <Badge className="mb-2">
             <span className="text-gray-300 ">version {version}</span>

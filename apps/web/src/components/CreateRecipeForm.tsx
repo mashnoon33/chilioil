@@ -9,9 +9,18 @@ import { api } from '@/trpc/react';
 import { parseRecipe } from "@repo/parser";
 import type { inferRouterOutputs } from '@trpc/server';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { toast } from 'sonner';
 import { FloatingActionButton } from './ui/floating-action-button';
+import { MoreVertical, Link } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { toRecipeMarkdown } from "@/app/types/scraper";
+import type { RecipeEditorRef } from "@/components/editor/monaco";
 
 type RouterOutputs = inferRouterOutputs<AppRouter>;
 type Recipe = RouterOutputs["recipe"]["getById"];
@@ -24,6 +33,7 @@ interface CreateRecipeFormProps {
 
 export function CreateRecipeForm({ mode = 'create', initialRecipe, blogId }: CreateRecipeFormProps) {
     const [recipe, setRecipe] = useState<string>(initialRecipe?.markdown ?? defaultRecipe);
+    const editorRef = useRef<RecipeEditorRef>(null);
     const utils = api.useUtils();
     const router = useRouter();
 
@@ -49,6 +59,32 @@ export function CreateRecipeForm({ mode = 'create', initialRecipe, blogId }: Cre
         }
     });
 
+    const { mutate: scrapeRecipe, isPending: isScraping } = api.scraper.scrapeRecipe.useMutation({
+        onSuccess: (data) => {
+            const markdown = toRecipeMarkdown(data);
+            setRecipe(markdown);
+            if (editorRef.current) {
+                editorRef.current.setValue(markdown);
+            }
+            toast.success("Recipe imported successfully!");
+        },
+        onError: (error) => {
+            toast.error(`Failed to import recipe: ${error.message}`);
+        }
+    });
+
+    const handlePasteUrl = async () => {
+        try {
+            const text = await navigator.clipboard.readText();
+            if (!text.startsWith('http')) {
+                toast.error("Clipboard content is not a valid URL");
+                return;
+            }
+            scrapeRecipe({ url: text });
+        } catch (error) {
+            toast.error("Failed to read clipboard");
+        }
+    };
 
     const handlePublish = async () => {
         try {
@@ -73,6 +109,7 @@ export function CreateRecipeForm({ mode = 'create', initialRecipe, blogId }: Cre
                 {/* Editor Section */}
                 <div className="h-screen flex flex-col ">
                     <RecipeEditor
+                        ref={editorRef}
                         initialValue={recipe}
                         onChange={(value: string | undefined) => setRecipe(value ?? '')}
                     />
@@ -91,6 +128,19 @@ export function CreateRecipeForm({ mode = 'create', initialRecipe, blogId }: Cre
                     <div className='flex flex-row gap-2 justify-end'>
                         <Button variant="default" className='bg-green-700 hover:bg-green-600' onClick={handlePublish}>{mode === 'create' ? 'Publish' : 'Update'}</Button>
                         <Button variant="outline" onClick={() => {/* TODO: Save as draft */ }}>Save as Draft</Button>
+                        <DropdownMenu >
+                            <DropdownMenuTrigger asChild>
+                                <Button size="icon" variant="ghost" className='text-neutral-300 hover:text-neutral-600 hover:bg-neutral-100 rounded-full' >
+                                    <MoreVertical className="h-4 w-4" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="start" side='top'> 
+                                <DropdownMenuItem onClick={handlePasteUrl} disabled={isScraping}>
+                                    <Link className="mr-2 h-4 w-4" />
+                                    <span>Paste URL</span>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </div>
             </FloatingActionButton>
