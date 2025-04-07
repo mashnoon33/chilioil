@@ -11,36 +11,35 @@ interface RecipeProps {
 
 export const RecipeComponent: React.FC<RecipeProps> = ({ recipe, version }) => {
   return (
-    <div className="flex flex-1 flex-col gap-1 pt-10 md:pt-20 h-[100%] max-w-2xl lg:max-w-7xl mx-auto px-4 md:px-8 lg:px-[7rem]">
-      <div className="flex flex-row">
-        {/* {recipe.cuisine && <CuisineText cuisine={recipe.cuisine} />} */}
-      </div>
-      <div>
-        <Badge variant="outline">
-          <span className="text-gray-300 "> V</span> {version}
-        </Badge>
-      </div>
-      <h1 className="text-4xl dark:text-white font-bold">{recipe.title}</h1>
+    <div className="flex flex-1 flex-col gap-1 pt-10 md:pt-20 h-[100%]px-4  @container">
+      <div className=" max-w-xl @lg:max-w-3xl mx-auto">
+        <div>
+          <Badge className="mb-2">
+            <span className="text-gray-300 ">version {version}</span>
+          </Badge>
+        </div>
+        <h1 className="text-4xl dark:text-white font-bold">{recipe.title}</h1>
 
-      {/* Description */}
-      <div className="flex-col hidden md:flex">
-        {recipe.description.length < 250 ? (
-          <div className="text-black/75 dark:text-white/75">{recipe.description}</div>
-        ) : (
-          <TwoColumnDiv text={recipe.description} />
-        )}
-      </div>
-      <div className="flex flex-col md:hidden mt-6 text-black/75 dark:text-white/75">
-        {recipe.description}
-      </div>
+        {/* Description */}
+        <div className="flex-col hidden @lg:flex ">
+          {recipe.description.length < 250 ? (
+            <div className="text-black/75 dark:text-white/75">{recipe.description}</div>
+          ) : (
+            <TwoColumnDiv text={recipe.description} />
+          )}
+        </div>
+        <div className="block @lg:hidden mt-6 text-black/75 dark:text-white/75">
+          <ReactMarkdown>{recipe.description}</ReactMarkdown>
+        </div>
 
-      {/* Sections */}
-      <div className="flex flex-col gap-10 mt-10">
-        {recipe.sections.map((section, index) => (
-          <Section key={index} section={section} />
-        ))}
+        {/* Sections */}
+        <div className="flex flex-col gap-10 mt-10 w-full">
+          {recipe.sections.map((section, index) => (
+            <Section key={index} section={section} />
+          ))}
+        </div>
+        <div className="min-h-[100px]"></div>
       </div>
-      <div className="min-h-[100px]"></div>
     </div>
   );
 };

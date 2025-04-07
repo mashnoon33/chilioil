@@ -11,6 +11,7 @@ import type { inferRouterOutputs } from '@trpc/server';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { FloatingActionButton } from './ui/floating-action-button';
 
 type RouterOutputs = inferRouterOutputs<AppRouter>;
 type Recipe = RouterOutputs["recipe"]["getById"];
@@ -26,7 +27,7 @@ export function CreateRecipeForm({ mode = 'create', initialRecipe, blogId }: Cre
     const utils = api.useUtils();
     const router = useRouter();
 
-    const { mutate: createRecipe , isPending: isCreating } = api.recipe.create.useMutation({
+    const { mutate: createRecipe, isPending: isCreating } = api.recipe.create.useMutation({
         onSuccess: async (data) => {
             await utils.recipe.getAll.invalidate();
             toast.success("Recipe published successfully!");
@@ -38,7 +39,7 @@ export function CreateRecipeForm({ mode = 'create', initialRecipe, blogId }: Cre
         }
     });
 
-    const { mutate: updateRecipe , isPending: isUpdating } = api.recipe.update.useMutation({
+    const { mutate: updateRecipe, isPending: isUpdating } = api.recipe.update.useMutation({
         onSuccess: async (data) => {
             await utils.recipe.getAll.invalidate();
             toast.success("Recipe updated successfully!");
@@ -48,17 +49,17 @@ export function CreateRecipeForm({ mode = 'create', initialRecipe, blogId }: Cre
         }
     });
 
-    
+
     const handlePublish = async () => {
         try {
             if (mode === 'edit' && initialRecipe) {
-                await updateRecipe({ 
+                await updateRecipe({
                     id: initialRecipe.id,
                     blogId: initialRecipe.blogId,
                     markdown: recipe,
                 });
             } else {
-                await createRecipe({ 
+                await createRecipe({
                     markdown: recipe,
                     blogId: blogId,
                 });
@@ -78,13 +79,21 @@ export function CreateRecipeForm({ mode = 'create', initialRecipe, blogId }: Cre
                 </div>
             </ResizablePanel>
             <ResizableHandle withHandle />
-            <ResizablePanel defaultSize={70}>
+            <ResizablePanel defaultSize={70} >
                 {/* Preview Section */}
-                <div className="h-screen flex-1 flex flex-col overflow-scroll p-6 bg-white">
-                    <Button variant="outline" onClick={handlePublish}>Update</Button>
-                <RecipeComponent recipe={parseRecipe(recipe)} version={initialRecipe?.version ?? 1} />
+                <div className="h-screen flex-1 flex flex-col overflow-scroll p-6 bg-white">                   
+                     <RecipeComponent recipe={parseRecipe(recipe)} version={initialRecipe?.version ?? 1} />
                 </div>
             </ResizablePanel>
+            <FloatingActionButton>
+                <div className='flex flex-col gap-2'>
+                    <div className="text-sm text-neutral-400 mb-5">{mode === 'create' ? 'Publish' : 'Update'} recipe</div>
+                    <div className='flex flex-row gap-2 justify-end'>
+                        <Button variant="default" className='bg-green-700 hover:bg-green-600' onClick={handlePublish}>{mode === 'create' ? 'Publish' : 'Update'}</Button>
+                        <Button variant="outline" onClick={() => {/* TODO: Save as draft */ }}>Save as Draft</Button>
+                    </div>
+                </div>
+            </FloatingActionButton>
         </ResizablePanelGroup>
     );
-} 
+}

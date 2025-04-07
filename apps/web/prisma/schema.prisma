@@ -87,6 +87,7 @@ model Recipe {
     blogId      String
     slug        String?
     public      Boolean            @default(true)
+    draft       Boolean            @default(false)
     @@unique([blogId, slug])
     @@index([blogId, slug])
     @@index([blogId, id])

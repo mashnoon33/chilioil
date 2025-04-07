@@ -8,6 +8,7 @@ import { register } from "@/components/editor/monaco/faux-language-server"
 
 import { api } from "@/trpc/react"
 import { RangeSlider } from "@/components/ui/range"
+import { FloatingActionButton } from "@/components/ui/floating-action-button"
 
 export default function DiffPage() {
   const params = useParams()
@@ -88,8 +89,8 @@ export default function DiffPage() {
         )}
       </div>
 
-      <div className="fixed bottom-8 bg-neutral-900 right-8 w-80  backdrop-blur  p-4 rounded-lg shadow-lg z-50">
-        <div className="text-sm text-neutral-400 mb-5">Compare Versions</div>
+      <FloatingActionButton>
+      <div className="text-sm text-neutral-400 mb-5">Compare Versions</div>
         <RangeSlider
           min={1}
           max={recipe.version}
@@ -102,7 +103,8 @@ export default function DiffPage() {
           }}
           formatValue={(value) => `v${value}`}
         />
-      </div>
+      </FloatingActionButton>
     </div>
   )
 }
+
