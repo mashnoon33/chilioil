@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "@/server/api/trpc";
 
-export const blogRouter = createTRPCRouter({
+export const bookRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.db.blog.findMany({
+    return await ctx.db.book.findMany({
       where: {
         userId: ctx.session.user.id,
       },
@@ -17,7 +17,7 @@ export const blogRouter = createTRPCRouter({
 
   // Public version for static generation
   getAllPublic: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.db.blog.findMany({
+    return await ctx.db.book.findMany({
       where: {
         public: true,
       },
@@ -36,7 +36,7 @@ export const blogRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      return await ctx.db.blog.create({
+      return await ctx.db.book.create({
         data: {
           id: input.slug,
           userId: ctx.session.user.id,

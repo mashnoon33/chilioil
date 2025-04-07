@@ -8,12 +8,12 @@ export default function AdminRecipeDetailPage() {
   const params = useParams();
   const { data: recipe } = api.recipe.getById.useQuery({ 
     id: params.id as string,
-    blogId: params.blog as string
+    bookId: params.book as string
   });
 
   if (!recipe) {
     return null;
   }
 
-  return <RecipeDetail recipe={recipe} blog={params.blog as string} />;
+  return <RecipeDetail recipe={recipe} book={params.book as string} />;
 }

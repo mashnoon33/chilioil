@@ -76,7 +76,7 @@ const recipeSelect = {
   markdown: true,
   version: true,
   public: true,
-  blogId: true,
+  bookId: true,
   ingredients: {
     where: {
       important: true
@@ -97,10 +97,10 @@ const recipeSelect = {
 };
 
 // Common recipe query function
-async function getRecipes(ctx: Context, blogId: string, publicOnly: boolean = false) {
+async function getRecipes(ctx: Context, bookId: string, publicOnly: boolean = false) {
   return await ctx.db.recipe.findMany({
     where: { 
-      blogId,
+      bookId,
       ...(publicOnly ? { public: true } : {})
     },
     select: {
@@ -108,7 +108,7 @@ async function getRecipes(ctx: Context, blogId: string, publicOnly: boolean = fa
       markdown: true,
       version: true,
       public: true,
-      blogId: true,
+      bookId: true,
       ingredients: {
         where: {
           important: true
@@ -131,11 +131,11 @@ async function getRecipes(ctx: Context, blogId: string, publicOnly: boolean = fa
 }
 
 // Common recipe by id query function
-async function getRecipeById(ctx: Context, id: string, blogId: string, publicOnly: boolean = false) {
+async function getRecipeById(ctx: Context, id: string, bookId: string, publicOnly: boolean = false) {
   return await ctx.db.recipe.findUnique({
     where: { 
       id,
-      blogId,
+      bookId,
       ...(publicOnly ? { public: true } : {})
     },
     select: recipeSelect,
@@ -144,27 +144,27 @@ async function getRecipeById(ctx: Context, id: string, blogId: string, publicOnl
 
 export const recipeRouter = createTRPCRouter({
   getAll: protectedProcedure
-    .input(z.object({ blogId: z.string() }))
+    .input(z.object({ bookId: z.string() }))
     .query(async ({ ctx, input }) => {
-      return getRecipes(ctx, input.blogId);
+      return getRecipes(ctx, input.bookId);
     }),
 
   getAllPublic: publicProcedure
-    .input(z.object({ blogId: z.string() }))
+    .input(z.object({ bookId: z.string() }))
     .query(async ({ ctx, input }) => {
-      return getRecipes(ctx, input.blogId, true);
+      return getRecipes(ctx, input.bookId, true);
     }),
 
   getByIdPublic: publicProcedure
-    .input(z.object({ id: z.string(), blogId: z.string() }))
+    .input(z.object({ id: z.string(), bookId: z.string() }))
     .query(async ({ ctx, input }) => {
-      return getRecipeById(ctx, input.id, input.blogId, true);
+      return getRecipeById(ctx, input.id, input.bookId, true);
     }),
 
   getById: protectedProcedure
-    .input(z.object({ id: z.string(), blogId: z.string() }))
+    .input(z.object({ id: z.string(), bookId: z.string() }))
     .query(async ({ ctx, input }) => {
-      return getRecipeById(ctx, input.id, input.blogId);
+      return getRecipeById(ctx, input.id, input.bookId);
     }),
 
   getByIdWithVersion: protectedProcedure
@@ -179,7 +179,7 @@ export const recipeRouter = createTRPCRouter({
     .input(
       z.object({
         markdown: z.string(),
-        blogId: z.string(),
+        bookId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -190,7 +190,7 @@ export const recipeRouter = createTRPCRouter({
       const recipe = await ctx.db.recipe.create({
         data: {
           markdown: input.markdown,
-          blogId: input.blogId,
+          bookId: input.bookId,
           metadata: {
             create: {
               name: parsedRecipe.title || "Untitled Recipe",
@@ -223,7 +223,7 @@ export const recipeRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-        blogId: z.string(),
+        bookId: z.string(),
         markdown: z.string(),
       })
     )
@@ -232,10 +232,10 @@ export const recipeRouter = createTRPCRouter({
       const recipe = await ctx.db.recipe.findUnique({
         where: {
           id: input.id,
-          blogId: input.blogId,
+          bookId: input.bookId,
         },
         select: {
-          blog: {
+          book: {
             select: {
               userId: true
             }
@@ -256,7 +256,7 @@ export const recipeRouter = createTRPCRouter({
         throw new Error("Recipe not found");
       }
 
-      if (recipe.blog.userId !== ctx.session.user.id) {
+      if (recipe.book.userId !== ctx.session.user.id) {
         throw new Error("Not authorized");
       }
 
@@ -271,7 +271,7 @@ export const recipeRouter = createTRPCRouter({
       const updatedRecipe = await ctx.db.recipe.update({
         where: {
           id: input.id,
-          blogId: input.blogId,
+          bookId: input.bookId,
         },
         data: {
           markdown: input.markdown,
@@ -305,10 +305,10 @@ export const recipeRouter = createTRPCRouter({
     }),
 
   delete: protectedProcedure
-    .input(z.object({ id: z.string(), blogId: z.string() }))
+    .input(z.object({ id: z.string(), bookId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.db.recipe.delete({
-        where: { id: input.id, blogId: input.blogId },
+        where: { id: input.id, bookId: input.bookId },
       });
     }),
 });

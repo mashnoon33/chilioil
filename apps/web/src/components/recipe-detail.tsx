@@ -21,12 +21,12 @@ const ErrorView = () => (
 
 interface RecipeDetailProps {
   recipe: RouterOutputs["recipe"]["getById"] | RouterOutputs["recipe"]["getByIdWithVersion"];
-  blog: string;
+  book: string;
   isLoading?: boolean;
   error?: Error | null;
 }
 
-export function RecipeDetail({ recipe, blog, isLoading, error }: RecipeDetailProps) {
+export function RecipeDetail({ recipe, book, isLoading, error }: RecipeDetailProps) {
   if (error || !recipe) return <ErrorView />;
   const parsedRecipe = parseRecipe(recipe.markdown);
   return (

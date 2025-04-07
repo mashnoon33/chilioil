@@ -7,15 +7,15 @@ import { api } from "@/trpc/react";
 export default function Page() {
 
 
-  const { data: blogs, isLoading } = api.blog.getAll.useQuery();
+  const { data: books, isLoading } = api.book.getAll.useQuery();
 
   const router = useRouter();
 
   useEffect(() => {
-    if (blogs && blogs.length > 0) {
-      router.push(`/admin/${blogs[0]?.id}`);
+    if (books && books.length > 0) {
+      router.push(`/admin/${books[0]?.id}`);
     }
-  }, [blogs, router]);
+  }, [books, router]);
 
   if (isLoading) {
     return null;

@@ -17,21 +17,21 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "../ui/input";
 
-interface CreateBlogDialogProps {
+interface CreateBookDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export function CreateBlogDialog({  open, onOpenChange }: CreateBlogDialogProps) {
+export function CreateBookDialog({  open, onOpenChange }: CreateBookDialogProps) {
   const [slug, setSlug] = useState("");
   const router = useRouter();
   const utils = api.useUtils();
-  const { mutate: createBlog, isPending } = api.blog.create.useMutation({
+  const { mutate: createBook, isPending } = api.book.create.useMutation({
     onSuccess: () => {
-      toast.success("Blog created successfully!");
+      toast.success("Book created successfully!");
       onOpenChange(false);
       router.push(`/admin/${slug}`);
-      utils.blog.invalidate();
+      utils.book.invalidate();
     },
     onError: (error) => {
       toast.error(error.message);
@@ -40,7 +40,7 @@ export function CreateBlogDialog({  open, onOpenChange }: CreateBlogDialogProps)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    createBlog({ slug });
+    createBook({ slug });
   };
 
   return (
@@ -49,19 +49,19 @@ export function CreateBlogDialog({  open, onOpenChange }: CreateBlogDialogProps)
       <DialogContent>
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Create a new blog</DialogTitle>
+            <DialogTitle>Create a new book</DialogTitle>
             <DialogDescription>
-              Create a new blog to organize your recipes. The slug will be used in the URL.
+              Create a new book to organize your recipes. The slug will be used in the URL.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <label htmlFor="slug">Blog Slug</label>
+              <label htmlFor="slug">Book Slug</label>
               <Input
                 id="slug"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
-                placeholder="my-awesome-blog"
+                placeholder="my-awesome-book"
                 pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$"
                 required
               />
@@ -81,7 +81,7 @@ export function CreateBlogDialog({  open, onOpenChange }: CreateBlogDialogProps)
                   Creating...
                 </>
               ) : (
-                "Create Blog"
+                "Create Book"
               )}
             </Button>
           </DialogFooter>

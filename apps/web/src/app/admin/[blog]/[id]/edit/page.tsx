@@ -8,7 +8,7 @@ export default function EditRecipePage() {
     const params = useParams();
     const { data: recipe, isLoading } = api.recipe.getById.useQuery({ 
         id: params.id as string,
-        blogId: params.blog as string
+        bookId: params.book as string
     });
 
     if (isLoading) {
@@ -23,5 +23,5 @@ export default function EditRecipePage() {
         return <div>Recipe not found</div>;
     }
 
-    return <CreateRecipeForm mode="edit" initialRecipe={recipe} blogId={params.blog as string} />;
+    return <CreateRecipeForm mode="edit" initialRecipe={recipe} bookId={params.book as string} />;
 } 

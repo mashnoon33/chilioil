@@ -1,5 +1,5 @@
 import { recipeRouter } from "@/server/api/routers/recipe";
-import { blogRouter } from "@/server/api/routers/blog";
+import { bookRouter } from "@/server/api/routers/book";
 import { adminRouter } from "@/server/api/routers/admin";
 import { scraperRouter } from "@/server/api/routers/scraper";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
@@ -11,7 +11,7 @@ import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
  */
 export const appRouter = createTRPCRouter({
   recipe: recipeRouter,
-  blog: blogRouter,
+  book: bookRouter,
   admin: adminRouter,
   scraper: scraperRouter,
 });

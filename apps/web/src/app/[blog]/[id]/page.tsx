@@ -3,13 +3,13 @@ import { RecipeDetail } from "@/components/recipe-detail";
 
 // Generate static params for all recipes
 export async function generateStaticParams() {
-  const blogs = await staticApi.blog.getAllPublic();
+  const books = await staticApi.book.getAllPublic();
   const params = [];
   
-  for (const blog of blogs) {
-    const recipes = await staticApi.recipe.getAllPublic({ blogId: blog.id });
+  for (const book of books) {
+    const recipes = await staticApi.recipe.getAllPublic({ bookId: book.id });
     params.push(...recipes.map((recipe: any) => ({
-      blog: blog.id,
+      book: book.id,
       id: recipe.id
     })));
   }
@@ -20,13 +20,13 @@ export async function generateStaticParams() {
 export default async function RecipeDetailPage({
   params,
 }: {
-  params: Promise<{ id: string; blog: string }>;
+  params: Promise<{ id: string; book: string }>;
 }) {
   const resolvedParams = await params;
   const recipe = await api.recipe.getByIdPublic({ 
     id: resolvedParams.id, 
-    blogId: resolvedParams.blog 
+    bookId: resolvedParams.book 
   });
 
-  return <RecipeDetail recipe={recipe} blog={resolvedParams.blog} />;
+  return <RecipeDetail recipe={recipe} book={resolvedParams.book} />;
 }

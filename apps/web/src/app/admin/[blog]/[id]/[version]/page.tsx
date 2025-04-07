@@ -25,5 +25,5 @@ export default function AdminRecipeDetailPage() {
     return <div>Recipe not found</div>;
   }
 
-  return <RecipeDetail recipe={recipe} blog={params.blog as string} />;
+  return <RecipeDetail recipe={recipe} book={params.book as string} />;
 }

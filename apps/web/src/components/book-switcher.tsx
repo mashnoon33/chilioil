@@ -19,27 +19,27 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { CreateBlogDialog } from "@/components/modals/create-blog-dialog"
+import { CreateBookDialog } from "@/components/modals/create-book-dialog"
 
-export function BlogSwitcher({
-  blogs,
-  onBlogChange,
+export function BookSwitcher({
+  books,
+  onBookChange,
 }: {
-  blogs: {
+  books: {
     name: string
     logo: React.ElementType
     subtitle: string
   }[]
-  onBlogChange: (blogId: string) => void
+  onBookChange: (bookId: string) => void
 }) {
   const { isMobile } = useSidebar()
   const router = useRouter()
   const params = useParams()
-  const currentBlogId = params.blog as string
-  const activeBlog = blogs.find(blog => blog.name === currentBlogId) || blogs[0]
+  const currentBookId = params.book as string
+  const activeBook = books.find(book => book.name === currentBookId) || books[0]
   const [isCreateDialogOpen, setIsCreateDialogOpen] = React.useState(false)
 
-  const handleCreateBlog = () => {
+  const handleCreateBook = () => {
     setIsCreateDialogOpen(true)
   }
   
@@ -52,16 +52,16 @@ export function BlogSwitcher({
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              {activeBlog && (
+              {activeBook && (
                 <>
                   <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                    <activeBlog.logo className="size-4" />
+                    <activeBook.logo className="size-4" />
                   </div>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold">
-                      {activeBlog.name}
+                      {activeBook.name}
                     </span>
-                    <span className="truncate text-xs">{activeBlog.subtitle}</span>
+                    <span className="truncate text-xs">{activeBook.subtitle}</span>
                   </div>
                   <ChevronsUpDown className="ml-auto" />
                 </>
@@ -75,36 +75,36 @@ export function BlogSwitcher({
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Blogs
+              Books
             </DropdownMenuLabel>
-            {blogs.map((blog, index) => (
+            {books.map((book, index) => (
               <DropdownMenuItem
-                key={blog.name}
+                key={book.name}
                 onClick={() => {
-                  onBlogChange(blog.name)
-                  router.push(`/admin/${blog.name}`)
+                  onBookChange(book.name)
+                  router.push(`/admin/${book.name}`)
                 }}
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-sm border">
-                  <blog.logo className="size-4 shrink-0" />
+                  <book.logo className="size-4 shrink-0" />
                 </div>
-                {blog.name}
+                {book.name}
                 <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2"  onClick={handleCreateBlog}>
+            <DropdownMenuItem className="gap-2 p-2"  onClick={handleCreateBook}>
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                 <Plus className="size-4" />
               </div>
-              <div className="font-medium text-muted-foreground">Create Blog</div>
+              <div className="font-medium text-muted-foreground">Create Book</div>
             </DropdownMenuItem>
 
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
-      <CreateBlogDialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen} />
+      <CreateBookDialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen} />
     </SidebarMenu>
   )
 }

@@ -15,7 +15,7 @@ import {
 import { api } from "@/trpc/react"
 import { Home, Plus, BookOpen } from "lucide-react"
 import { useEffect } from "react"
-import { BlogSwitcher } from "@/components/blog-switcher"
+import { BookSwitcher } from "@/components/book-switcher"
 import { useRouter, useParams } from "next/navigation";
 import { Badge } from "./ui/badge"
 
@@ -30,64 +30,64 @@ function VersionBadge({ version }: { version: number }) {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session } = useSession()
   const router = useRouter()
-  const { data: blogs = [] } = api.blog.getAll.useQuery()
-  const [activeBlogId, setActiveBlogId] = React.useState("")
-  const { data: recipes = [] } = api.recipe.getAll.useQuery({ blogId: activeBlogId }, {
-    enabled: !!activeBlogId
+  const { data: books = [] } = api.book.getAll.useQuery()
+  const [activeBookId, setActiveBookId] = React.useState("")
+  const { data: recipes = [] } = api.recipe.getAll.useQuery({ bookId: activeBookId }, {
+    enabled: !!activeBookId
   })
   const params = useParams()
 
-  // Update active blog when blogs are loaded
+  // Update active book when books are loaded
   useEffect(() => {
-    if (blogs.length > 0 && !activeBlogId) {
-      const firstBlog = blogs[0]
-      if (firstBlog) {
-        setActiveBlogId(firstBlog.id)
+    if (books.length > 0 && !activeBookId) {
+      const firstBook = books[0]
+      if (firstBook) {
+        setActiveBookId(firstBook.id)
       }
     }
-  }, [blogs, activeBlogId])
+  }, [books, activeBookId])
 
   const navItems = [
     {
       title: "Home",
-      url: activeBlogId ? `/admin/${activeBlogId}` : "/",
+      url: activeBookId ? `/admin/${activeBookId}` : "/",
       icon: Home,
     },
     {
       title: "Create Recipe",
-      url: `/admin/${activeBlogId}/create`,
+      url: `/admin/${activeBookId}/create`,
       icon: Plus,
     },
   ]
   const recipeItems = recipes.map((recipe) => ({
     id: recipe.id,
-    blogId: recipe.blogId,
+    bookId: recipe.bookId,
     name: recipe.metadata?.name || "Untitled Recipe", 
-    url: `/admin/${activeBlogId}/${recipe.id}`,
+    url: `/admin/${activeBookId}/${recipe.id}`,
     icon: <VersionBadge version={recipe.version || 1} />,
     latestVersion: recipe.version || 1
   }))
 
-  const handleBlogChange = (blogId: string) => {
-    setActiveBlogId(blogId)
-    router.push(`/${blogId}`)
+  const handleBookChange = (bookId: string) => {
+    setActiveBookId(bookId)
+    router.push(`/${bookId}`)
   }
 
   useEffect(() => {
-    const currentBlogId = params.blog as string
-    setActiveBlogId(currentBlogId)
-  }, [params.blog])
+    const currentBookId = params.book as string
+    setActiveBookId(currentBookId)
+  }, [params.book])
 
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <BlogSwitcher
-          blogs={blogs.map((blog) => ({
-            name: blog.id,
+        <BookSwitcher
+          books={books.map((book) => ({
+            name: book.id,
             logo: BookOpen,
-            subtitle: `${blog.recipes.length} recipes`
+            subtitle: `${book.recipes.length} recipes`
           }))}
-          onBlogChange={handleBlogChange}
+          onBookChange={handleBookChange}
         />
       </SidebarHeader>
       <SidebarContent>

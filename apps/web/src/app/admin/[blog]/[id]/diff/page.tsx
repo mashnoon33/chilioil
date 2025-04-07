@@ -17,7 +17,7 @@ export default function DiffPage() {
 
   const { data: recipe, isLoading: recipeLoading } = api.recipe.getById.useQuery({
     id: params.id as string,
-    blogId: params.blog as string
+    bookId: params.book as string
   })
 
   const { data: leftRecipe, isLoading: leftLoading } = api.recipe.getByIdWithVersion.useQuery({

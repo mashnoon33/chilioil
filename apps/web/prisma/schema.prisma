@@ -50,7 +50,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
-    blogs         Blog[]
+    books         Book[]
 }
 
 model VerificationToken {
@@ -61,7 +61,7 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
-model Blog {
+model Book {
     id        String    @id @unique
     name      String?
     markdown  String?
@@ -83,14 +83,14 @@ model Recipe {
     ingredients RecipeIngredient[]
     createdAt   DateTime           @default(now())
     updatedAt   DateTime           @updatedAt
-    blog        Blog               @relation(fields: [blogId], references: [id], onDelete: Cascade)
-    blogId      String
+    book        Book               @relation(fields: [bookId], references: [id], onDelete: Cascade)
+    bookId      String
     slug        String?
     public      Boolean            @default(true)
     draft       Boolean            @default(false)
-    @@unique([blogId, slug])
-    @@index([blogId, slug])
-    @@index([blogId, id])
+    @@unique([bookId, slug])
+    @@index([bookId, slug])
+    @@index([bookId, id])
 
 }
 

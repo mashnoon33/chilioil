@@ -9,11 +9,11 @@ import { columns } from "./columns";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LayoutGrid, Table } from "lucide-react";
 
-export default function AdminBlogPage() {
+export default function AdminBookPage() {
   const params = useParams();
   const [view, setView] = useState<"cards" | "table">("cards");
   const { data, isLoading } = api.admin.getDashboardData.useQuery({
-    blogId: params.blog as string,
+    bookId: params.book as string,
   });
 
   if (isLoading) {
@@ -27,8 +27,8 @@ export default function AdminBlogPage() {
   return (
     <div className=" px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Blog Dashboard</h1>
-        <p className="text-muted-foreground">Manage your recipes and track your blog's performance</p>
+        <h1 className="text-4xl font-bold mb-2">Book Dashboard</h1>
+        <p className="text-muted-foreground">Manage your recipes and track your book's performance</p>
       </div>
       
       {/* Metrics Section */}
@@ -39,7 +39,7 @@ export default function AdminBlogPage() {
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-bold">{data?.totalRecipes || 0}</p>
-            <p className="text-sm text-muted-foreground mt-1">All recipes in your blog</p>
+            <p className="text-sm text-muted-foreground mt-1">All recipes in your book</p>
           </CardContent>
         </Card>
         

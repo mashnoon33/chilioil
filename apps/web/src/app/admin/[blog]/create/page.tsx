@@ -4,6 +4,6 @@ import { useParams } from 'next/navigation';
 
 export default function CreatePage() {
     const params = useParams();
-    const blog = params.blog as string;
-    return <CreateRecipeForm blogId={blog} />;
+    const book = params.book as string;
+    return <CreateRecipeForm bookId={book} />;
 }

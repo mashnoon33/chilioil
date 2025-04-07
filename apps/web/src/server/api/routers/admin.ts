@@ -4,16 +4,16 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const adminRouter = createTRPCRouter({
   getDashboardData: protectedProcedure
-    .input(z.object({ blogId: z.string() }))
+    .input(z.object({ bookId: z.string() }))
     .query(async ({ input }) => {
       // Get total recipes count
       const totalRecipes = await db.recipe.count({
-        where: { blogId: input.blogId },
+        where: { bookId: input.bookId },
       });
 
       // Get recent recipes with their metadata
       const recentRecipes = await db.recipe.findMany({
-        where: { blogId: input.blogId },
+        where: { bookId: input.bookId },
         include: { metadata: true, ingredients: {
             include: {
                 ingredient: true,

@@ -3,17 +3,17 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
-  { params }: { params: { blog: string } }
+  { params }: { params: { book: string } }
 ) {
   try {
     // Get total recipes count
     const totalRecipes = await db.recipe.count({
-      where: { blogId: params.blog },
+      where: { bookId: params.book },
     });
 
     // Get recent recipes with their metadata
     const recentRecipes = await db.recipe.findMany({
-      where: { blogId: params.blog },
+      where: { bookId: params.book },
       include: { metadata: true },
       orderBy: { updatedAt: "desc" },
       take: 6, // Show last 6 recipes

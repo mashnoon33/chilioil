@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { MdPlusOne } from "react-icons/md";
 
 export async function generateStaticParams() {
-  const blogs = await staticApi.blog.getAllPublic();
-  return blogs.map(blog => ({
-    blog: blog.id
+  const books = await staticApi.book.getAllPublic();
+  return books.map(book => ({
+    book: book.id
   }));
 }
 
@@ -79,11 +79,11 @@ const CreateRecipeButton = () => (
 export default async function RecipesPage({
   params,
 }: {
-  params: Promise<{ blog: string }>;
+  params: Promise<{ book: string }>;
 }) {
   const resolvedParams = await params;
-  const recipes = await api.recipe.getAllPublic({ blogId: resolvedParams.blog });
-  const currentRoute = `/${resolvedParams.blog}`;
+  const recipes = await api.recipe.getAllPublic({ bookId: resolvedParams.book });
+  const currentRoute = `/${resolvedParams.book}`;
 
   return (
     <div className="mx-auto px-4 my-20 md:px-8">

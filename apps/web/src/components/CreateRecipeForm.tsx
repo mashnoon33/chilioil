@@ -28,10 +28,10 @@ type Recipe = RouterOutputs["recipe"]["getById"];
 interface CreateRecipeFormProps {
     mode?: 'create' | 'edit';
     initialRecipe?: Recipe;
-    blogId: string;
+    bookId: string;
 }
 
-export function CreateRecipeForm({ mode = 'create', initialRecipe, blogId }: CreateRecipeFormProps) {
+export function CreateRecipeForm({ mode = 'create', initialRecipe, bookId }: CreateRecipeFormProps) {
     const [recipe, setRecipe] = useState<string>(initialRecipe?.markdown ?? defaultRecipe);
     const editorRef = useRef<RecipeEditorRef>(null);
     const utils = api.useUtils();
@@ -41,7 +41,7 @@ export function CreateRecipeForm({ mode = 'create', initialRecipe, blogId }: Cre
         onSuccess: async (data) => {
             await utils.recipe.getAll.invalidate();
             toast.success("Recipe published successfully!");
-            router.push(`/admin/${blogId}/${data.id}`);
+            router.push(`/admin/${bookId}/${data.id}`);
 
         },
         onError: (error) => {
@@ -91,13 +91,13 @@ export function CreateRecipeForm({ mode = 'create', initialRecipe, blogId }: Cre
             if (mode === 'edit' && initialRecipe) {
                 await updateRecipe({
                     id: initialRecipe.id,
-                    blogId: initialRecipe.blogId,
+                    bookId: initialRecipe.bookId,
                     markdown: recipe,
                 });
             } else {
                 await createRecipe({
                     markdown: recipe,
-                    blogId: blogId,
+                    bookId: bookId,
                 });
             }
         } catch (error) {

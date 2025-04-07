@@ -42,7 +42,7 @@ export function NavRecipies({
 }: {
   recipes: {
     id: string
-    blogId: string
+    bookId: string
     name: string
     url: string
     icon: ReactElement
@@ -57,7 +57,7 @@ export function NavRecipies({
     onSuccess: async () => {
       await utils.recipe.getAll.invalidate();
       toast.success("Recipe deleted successfully!")
-      router.push(`/admin/${recipes[0]?.blogId}`)
+      router.push(`/admin/${recipes[0]?.bookId}`)
     },
   })
   return (
@@ -119,7 +119,7 @@ export function NavRecipies({
                     </DropdownMenuPortal>
                   </DropdownMenuSub>
                 )}
-                <DropdownMenuItem onClick={() => deleteRecipe({ id: item.id, blogId: item.blogId })}>
+                <DropdownMenuItem onClick={() => deleteRecipe({ id: item.id, bookId: item.bookId })}>
                   <Trash2 className="text-muted-foreground" />
                   <span>Delete Recipe</span>
                 </DropdownMenuItem>
