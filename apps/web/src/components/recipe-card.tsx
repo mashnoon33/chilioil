@@ -25,7 +25,7 @@ export const RecipeCard = ({ recipe, currentRoute }: { recipe: RecipeRes; curren
       <div>
         {recipe.ingredients.map((ingredient) => (
           <div 
-            key={ingredient.id} 
+            key={ingredient.ingredient.id} 
             className="form-check justify-center border-neutral-300/30 dark:border-neutral-600 border-b my-[.5]"
           >
             <div className="flex text-sm text-neutral-900/50 dark:text-white/60 flex-row">
