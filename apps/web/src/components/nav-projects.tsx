@@ -45,7 +45,7 @@ export function NavRecipies({
     bookId: string
     name: string
     url: string
-    icon: ReactElement
+    icon?: ReactElement
     latestVersion: number
   }[]
 }) {
@@ -97,10 +97,12 @@ export function NavRecipies({
                   <span>Share Recipe</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => router.push(`${item.url}/diff`)}>
-                  <DiffIcon className="text-muted-foreground" />
-                  <span>Compare Versions</span>
-                </DropdownMenuItem>
+                {item.latestVersion > 1 && (
+                  <DropdownMenuItem onClick={() => router.push(`${item.url}/diff`)}>
+                    <DiffIcon className="text-muted-foreground" />
+                    <span>Compare Versions</span>
+                  </DropdownMenuItem>
+                )}
                 {item.latestVersion > 1 && (
                   <DropdownMenuSub>
                     <DropdownMenuSubTrigger>

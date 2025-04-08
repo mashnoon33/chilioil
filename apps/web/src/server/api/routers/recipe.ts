@@ -167,6 +167,14 @@ export const recipeRouter = createTRPCRouter({
       return getRecipeById(ctx, input.id, input.bookId);
     }),
 
+  listVersions: protectedProcedure
+    .input(z.object({ id: z.string(), bookId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.recipeHistory.findMany({
+        where: { recipeId: input.id },
+      });
+    }),
+
   getByIdWithVersion: protectedProcedure
     .input(z.object({ id: z.string(), version: z.number() }))
     .query(async ({ ctx, input }) => {
@@ -185,7 +193,7 @@ export const recipeRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       // Parse the markdown to extract metadata
       const parsedRecipe = parseRecipe(input.markdown);
-
+      const frontmatter = parseFrontmatter(input.markdown);
       // Create the recipe
       const recipe = await ctx.db.recipe.create({
         data: {
@@ -195,6 +203,7 @@ export const recipeRouter = createTRPCRouter({
             create: {
               name: parsedRecipe.title || "Untitled Recipe",
               summary: parsedRecipe.description || "",
+              cuisine: frontmatter.parsed.cuisine || null,
             },
           },
           history: {

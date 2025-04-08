@@ -30,8 +30,6 @@ export function RecipeDetail({ recipe, book, isLoading, error }: RecipeDetailPro
   if (error || !recipe) return <ErrorView />;
   const parsedRecipe = parseRecipe(recipe.markdown);
   return (
-    <div className="container mx-auto py-6">
-        <RecipeComponent recipe={parsedRecipe} version={recipe.version} />
-    </div>
+    <RecipeComponent recipe={parsedRecipe} version={recipe.version} />
   );
 } 

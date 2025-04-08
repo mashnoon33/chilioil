@@ -8,10 +8,7 @@ export const frontmatterSchema = z.object({
   'short-description': z.string().optional(),
   'short-url': z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Must be a dash-separated string with no spaces').optional(),
   'yields': z.string().optional(),
-  'cuisine': z.union([
-    z.array(z.string()),
-    z.string()
-  ]).optional(),
+  'cuisine': z.array(z.string()).optional(),
 }).strict();
 
 // Type for frontmatter derived from Zod schema

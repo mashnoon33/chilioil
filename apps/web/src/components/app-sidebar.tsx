@@ -19,13 +19,6 @@ import { BookSwitcher } from "@/components/book-switcher"
 import { useRouter, useParams } from "next/navigation";
 import { Badge } from "./ui/badge"
 
-function VersionBadge({ version }: { version: number }) {
-  return (
-    <Badge variant="outline" className="px-2 mx-0">
-      {version}
-    </Badge>
-  )
-}
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session } = useSession()
@@ -64,7 +57,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     bookId: recipe.bookId,
     name: recipe.metadata?.name || "Untitled Recipe", 
     url: `/admin/${activeBookId}/${recipe.id}`,
-    icon: <VersionBadge version={recipe.version || 1} />,
     latestVersion: recipe.version || 1
   }))
 

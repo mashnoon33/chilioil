@@ -14,11 +14,31 @@ export const adminRouter = createTRPCRouter({
       // Get recent recipes with their metadata
       const recentRecipes = await db.recipe.findMany({
         where: { bookId: input.bookId },
-        include: { metadata: true, ingredients: {
-            include: {
-                ingredient: true,
+        select: {
+          id: true,
+          markdown: true,
+          version: true,
+          public: true,
+          bookId: true,
+          updatedAt: true,
+          ingredients: {
+            where: {
+              important: true
+            },
+            select: {
+              ingredient: {
+                select: {
+                  id: true,
+                  name: true,
+                }
+              },
+              quantity: true,
+              unit: true,
+              description: true
             }
-        } },
+          },
+          metadata: true
+        },
         orderBy: { updatedAt: "desc" },
         take: 6, // Show last 6 recipes
       });

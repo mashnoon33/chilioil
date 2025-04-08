@@ -8,7 +8,7 @@ import { Loader2 } from "lucide-react";
 export default function AdminRecipeDetailPage() {
   const params = useParams();
   const version = parseInt(params.version as string);
-  const { data: recipe, isLoading } = api.recipe.getByIdWithVersion.useQuery({ 
+  const { data: recipe, isLoading } = api.recipe.getByIdWithVersion.useQuery({
     id: params.id as string,
     version: version
   });
@@ -25,5 +25,6 @@ export default function AdminRecipeDetailPage() {
     return <div>Recipe not found</div>;
   }
 
-  return <RecipeDetail recipe={recipe} book={params.book as string} />;
+  return  <RecipeDetail recipe={recipe} book={params.book as string} />;
+
 }

@@ -100,6 +100,7 @@ model RecipeMetadata {
     recipe      Recipe             @relation(fields: [recipeId], references: [id], onDelete: Cascade)
     name        String
     summary     String
+    cuisine     String[]
     ingredients RecipeIngredient[]
     createdAt   DateTime           @default(now())
     updatedAt   DateTime           @updatedAt

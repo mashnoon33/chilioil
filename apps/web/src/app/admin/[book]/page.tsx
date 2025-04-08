@@ -8,7 +8,7 @@ import { DataTable } from "@/components/ui/data-table";
 import { columns } from "./columns";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LayoutGrid, Table } from "lucide-react";
-
+import { RecipeCard } from "@/components/recipe-card";
 export default function AdminBookPage() {
   const params = useParams();
   const [view, setView] = useState<"cards" | "table">("cards");
@@ -26,10 +26,7 @@ export default function AdminBookPage() {
 
   return (
     <div className=" px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Book Dashboard</h1>
-        <p className="text-muted-foreground">Manage your recipes and track your book's performance</p>
-      </div>
+   
       
       {/* Metrics Section */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
@@ -90,24 +87,7 @@ export default function AdminBookPage() {
         {view === "cards" ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {data?.recentRecipes?.map((recipe) => (
-              <Card 
-                key={recipe.id} 
-                className="group hover:bg-accent/50 transition-colors cursor-pointer"
-              >
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-lg font-medium group-hover:text-accent-foreground">
-                    {recipe.metadata?.name || "Untitled Recipe"}
-                  </CardTitle>
-                  <CardDescription className="text-xs">
-                    Version {recipe.version} • {new Date(recipe.updatedAt).toLocaleDateString()}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground line-clamp-2">
-                    {recipe.metadata?.summary || "No summary available"}
-                  </p>
-                </CardContent>
-              </Card>
+              <RecipeCard key={recipe.id} recipe={recipe} currentRoute={`/admin/${params.book}`} />
             ))}
           </div>
         ) : (

@@ -1,8 +1,7 @@
 "use client"
 import Editor, { OnMount, useMonaco } from '@monaco-editor/react';
 import type * as Monaco from 'monaco-editor';
-import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
-import { defaultRecipe } from './const';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import { register, validate } from './faux-language-server';
 
 export interface RecipeEditorProps {

@@ -15,6 +15,9 @@ export const RecipeCard = ({ recipe, currentRoute }: { recipe: RecipeRes; curren
   <Link href={`${currentRoute}/${recipe.id}`}>
     <BaseCard>
       <div className="pb-2">
+        <div className="flex flex-row items-center gap-2">
+          {recipe.metadata?.cuisine?.join("-")}
+        </div>
         <h3 className="text-neutral-800/80 dark:text-white/90 font-black pt-0 my-0 line-clamp-1 pb-1">
           {recipe.metadata?.name || "Untitled Recipe"}
         </h3>

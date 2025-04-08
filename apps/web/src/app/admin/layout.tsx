@@ -1,6 +1,7 @@
 "use client";
 
 import { AppSidebar } from "@/components/app-sidebar";
+import { AuthModal } from "@/components/modals/auth-modal";
 import {
     SidebarInset,
     SidebarProvider,
@@ -26,8 +27,9 @@ export default function AdminLayout({
   return (
     <SidebarProvider open={open} onOpenChange={setOpen}>
       <AppSidebar />
-      <SidebarInset>
-            {children}
+      <SidebarInset >
+        <AuthModal />
+        {children}
       </SidebarInset>
     </SidebarProvider>
   );
