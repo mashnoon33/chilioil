@@ -1,3 +1,4 @@
+import { frontmatterKeys } from './frontmatter';
 import { RecipeLanguageServerDependencies } from './types';
 
 export function registerLanguageConfiguration({ monaco }: RecipeLanguageServerDependencies): void {
@@ -9,7 +10,7 @@ export function registerLanguageConfiguration({ monaco }: RecipeLanguageServerDe
       root: [
         // YAML Frontmatter
         [/^---$/, 'recipe-frontmatter-delimiter'],
-        [/^(short-description|short-url|yields|cuisine)(:)(.*)$/, ['recipe-frontmatter-key', 'recipe-frontmatter-colon', 'recipe-frontmatter-value']],
+        [new RegExp(`^(${frontmatterKeys.join('|')})(:)(.*)$`), ['recipe-frontmatter-key', 'recipe-frontmatter-colon', 'recipe-frontmatter-value']],
         
         // Headers
         [/^#\s.*$/, 'recipe-header'],

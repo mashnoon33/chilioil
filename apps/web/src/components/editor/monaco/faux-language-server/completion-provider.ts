@@ -1,6 +1,7 @@
 import { type CompletionItem, type RecipeLanguageServerDependencies } from './types';
 import { RECIPE_SECTIONS, COMMON_UNITS } from './constants';
-import { parseFrontmatter } from './frontmatter';
+import { frontmatterKeys, parseFrontmatter } from './frontmatter';
+import { CUISINES } from '@/lib/cuisine';
 
 export function registerCompletionProvider({ monaco }: RecipeLanguageServerDependencies): void {
   monaco.languages.registerCompletionItemProvider('recipe', {
@@ -31,66 +32,20 @@ export function registerCompletionProvider({ monaco }: RecipeLanguageServerDepen
         // We're inside the frontmatter block
         if (textUntilPosition.trim() === '' || textUntilPosition.indexOf(':') === -1) {
           // Suggest frontmatter keys if we're at the start of a line or no colon yet
-          suggestions.push(
-            {
-              label: 'short-description',
-              kind: monaco.languages.CompletionItemKind.Property,
-              insertText: 'short-description: ',
-              range
-            },
-            {
-              label: 'short-url',
-              kind: monaco.languages.CompletionItemKind.Property,
-              insertText: 'short-url: ',
-              range
-            },
-            {
-              label: 'yields',
-              kind: monaco.languages.CompletionItemKind.Property,
-              insertText: 'yields: ',
-              range
-            },
-            {
-              label: 'cuisine',
-              kind: monaco.languages.CompletionItemKind.Property,
-              insertText: 'cuisine: ',
-              range
-            }
-          );
+          suggestions.push(...frontmatterKeys.map(key => ({
+            label: key,
+            kind: monaco.languages.CompletionItemKind.Property,
+            insertText: `${key}: `,
+            range
+          })));
         } else if (textUntilPosition.includes('cuisine:') && position.column > textUntilPosition.indexOf('cuisine:') + 8) {
-          // For cuisine field, suggest common cuisine types
-          suggestions.push(
-            {
-              label: 'Italian',
-              kind: monaco.languages.CompletionItemKind.Value,
-              insertText: 'Italian',
-              range
-            },
-            {
-              label: 'Mexican',
-              kind: monaco.languages.CompletionItemKind.Value,
-              insertText: 'Mexican',
-              range
-            },
-            {
-              label: 'Chinese',
-              kind: monaco.languages.CompletionItemKind.Value,
-              insertText: 'Chinese',
-              range
-            },
-            {
-              label: 'Indian',
-              kind: monaco.languages.CompletionItemKind.Value,
-              insertText: 'Indian',
-              range
-            },
-            {
-              label: 'Thai',
-              kind: monaco.languages.CompletionItemKind.Value,
-              insertText: 'Thai',
-              range
-            }
-          );
+          // For cuisine field, suggest all available cuisines
+          suggestions.push(...CUISINES.map(cuisine => ({
+            label: cuisine,
+            kind: monaco.languages.CompletionItemKind.Value,
+            insertText: cuisine,
+            range
+          })));
         }
       }
 

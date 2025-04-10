@@ -101,6 +101,7 @@ model RecipeMetadata {
     name        String
     summary     String
     cuisine     String[]
+    source      String?
     ingredients RecipeIngredient[]
     createdAt   DateTime           @default(now())
     updatedAt   DateTime           @updatedAt
