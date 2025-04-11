@@ -2,7 +2,7 @@ import Link from "next/link";
 import { api, staticApi } from "@/trpc/server";
 import { Button } from "@/components/ui/button";
 import { MdPlusOne } from "react-icons/md";
-
+import { RouterOutputs } from "@/trpc/react";
 export async function generateStaticParams() {
   const books = await staticApi.book.getAllPublic();
   return books.map(book => ({
@@ -16,8 +16,10 @@ const BaseCard = ({ children, className = "" }: { children: React.ReactNode; cla
   </div>
 );
 
-const RecipeCard = ({ recipe, currentRoute }: { recipe: any; currentRoute: string }) => (
-  <Link href={`${currentRoute}/${recipe.id}`}>
+type Recipe = NonNullable<RouterOutputs["recipe"]["getById"]>;
+
+const RecipeCard = ({ recipe, currentRoute }: { recipe: Recipe; currentRoute: string }) => (
+  <Link href={`${currentRoute}/${recipe.slug ?? recipe.id}`}>
     <BaseCard>
       <div className="pb-2">
         <h3 className="text-neutral-800/80 dark:text-white/90 font-black pt-0 my-0 line-clamp-1 pb-1">
@@ -28,9 +30,9 @@ const RecipeCard = ({ recipe, currentRoute }: { recipe: any; currentRoute: strin
         </p>
       </div>
       <div>
-        {recipe.ingredients.map((ingredient: any) => (
+        {recipe.ingredients.map((ingredient) => (
           <div 
-            key={ingredient.id} 
+            key={ingredient.ingredient.id} 
             className="form-check justify-center border-neutral-300/30 dark:border-neutral-600 border-b my-[.5]"
           >
             <div className="flex text-sm text-neutral-900/50 dark:text-white/60 flex-row">

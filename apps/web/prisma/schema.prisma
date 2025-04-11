@@ -91,7 +91,6 @@ model Recipe {
     @@unique([bookId, slug])
     @@index([bookId, slug])
     @@index([bookId, id])
-
 }
 
 model RecipeMetadata {

@@ -6,7 +6,7 @@ import yaml from 'yaml';
 // Define the frontmatter schema using Zod
 export const frontmatterSchema = z.object({
   'short-description': z.string().optional(),
-  'short-url': z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Must be a dash-separated string with no spaces').optional(),
+  'slug': z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Must be a dash-separated string with no spaces').optional(),
   'yields': z.string().optional(),
   'cuisine': z.string().transform(s => s.split(',')).optional(),
   'source': z.string().optional(),
@@ -16,10 +16,8 @@ export const frontmatterSchema = z.object({
 export const frontmatterKeys = Object.keys(frontmatterSchema.shape);
 export type FrontmatterKey = keyof typeof frontmatterSchema.shape;
 
-// Type for frontmatter derived from Zod schema
 export type FrontmatterType = z.infer<typeof frontmatterSchema>;
 
-// Result type for frontmatter parsing
 export interface FrontmatterParseResult {
   raw: Record<string, any>;
   parsed: FrontmatterType;
@@ -28,9 +26,7 @@ export interface FrontmatterParseResult {
   endLine: number;
 }
 
-/**
- * Extracts frontmatter data using YAML parser
- */
+
 const extractFrontmatterData = (
   lines: string[], 
   startLine: number, 
@@ -44,9 +40,7 @@ const extractFrontmatterData = (
   }
 };
 
-/**
- * Parse frontmatter from text
- */
+
 export const parseFrontmatter = (text: string): FrontmatterParseResult => {
   const lines = text.split('\n');
   let raw: Record<string, any> = {};
@@ -55,11 +49,9 @@ export const parseFrontmatter = (text: string): FrontmatterParseResult => {
   let startLine = -1;
   let endLine = -1;
 
-  // Check if text starts with frontmatter delimiter
   if (lines.length > 0 && lines[0]?.trim() === '---') {
     startLine = 0;
     
-    // Find closing delimiter
     for (let i = 1; i < lines.length; i++) {
       if (lines[i]?.trim() === '---') {
         endLine = i;
@@ -76,15 +68,12 @@ export const parseFrontmatter = (text: string): FrontmatterParseResult => {
   try {
     parsed = frontmatterSchema.parse(raw);
   } catch (error) {
-    // Validation will handle errors
   }
 
   return { raw, parsed, hasFrontmatter, startLine, endLine };
 };
 
-/**
- * Check for disallowed keys in frontmatter
- */
+
 const validateFrontmatterKeys = (
   monaco: MonacoType,
   lines: string[],
@@ -133,9 +122,7 @@ const validateFrontmatterKeys = (
   return problems;
 };
 
-/**
- * Map Zod validation errors to Monaco markers
- */
+
 const mapZodErrorsToMarkers = (
   monaco: MonacoType,
   result: z.SafeParseError<any>,
@@ -146,10 +133,7 @@ const mapZodErrorsToMarkers = (
   const problems: MarkerData[] = [];
   
   result.error.errors.forEach(error => {
-    // Extract key from path
     const key = error.path[0] as string;
-    
-    // Find the line number for this key
     const lineIndex = lines.findIndex((line, idx) => 
       idx > startLine && idx < endLine && line.trim().startsWith(`${key}:`)
     );
@@ -174,9 +158,6 @@ const mapZodErrorsToMarkers = (
   return problems;
 };
 
-/**
- * Validate frontmatter against schema using Zod
- */
 export const validateFrontmatter = (
   monaco: MonacoType, 
   model: TextModel
@@ -191,11 +172,9 @@ export const validateFrontmatter = (
 
   const lines = text.split('\n');
   
-  // Check for disallowed keys
   const keyProblems = validateFrontmatterKeys(monaco, lines, startLine, endLine);
   problems.push(...keyProblems);
 
-  // Validate against Zod schema
   const result = frontmatterSchema.safeParse(raw);
   
   if (!result.success) {

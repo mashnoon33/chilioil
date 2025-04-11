@@ -76,6 +76,7 @@ const recipeSelect = {
   markdown: true,
   version: true,
   public: true,
+  slug: true,
   bookId: true,
   ingredients: {
     where: {
@@ -109,6 +110,7 @@ async function getRecipes(ctx: Context, bookId: string, publicOnly: boolean = fa
       version: true,
       public: true,
       bookId: true,
+      slug: true,
       ingredients: {
         where: {
           important: true
@@ -132,12 +134,17 @@ async function getRecipes(ctx: Context, bookId: string, publicOnly: boolean = fa
 
 // Common recipe by id query function
 async function getRecipeById(ctx: Context, id: string, bookId: string, publicOnly: boolean = false) {
-  return await ctx.db.recipe.findUnique({
-    where: { 
-      id,
-      bookId,
-      ...(publicOnly ? { public: true } : {})
-    },
+  const whereClause = {
+    bookId,
+    ...(publicOnly ? { public: true } : {}),
+    OR: [
+      { id },
+      { slug: id }
+    ]
+  };
+
+  return await ctx.db.recipe.findFirst({
+    where: whereClause,
     select: recipeSelect,
   });
 }
@@ -199,6 +206,7 @@ export const recipeRouter = createTRPCRouter({
         data: {
           markdown: input.markdown,
           bookId: input.bookId,
+          slug: frontmatter.parsed.slug || null,
           metadata: {
             create: {
               name: parsedRecipe.title || "Untitled Recipe",
@@ -271,6 +279,7 @@ export const recipeRouter = createTRPCRouter({
 
       // Parse the markdown to extract metadata
       const parsedRecipe = parseRecipe(input.markdown);
+      const frontmatter = parseFrontmatter(input.markdown);
       const latestVersion = recipe.history[0]?.version ?? 0;
 
       // Delete existing ingredients
@@ -285,6 +294,7 @@ export const recipeRouter = createTRPCRouter({
         data: {
           markdown: input.markdown,
           version: latestVersion + 1,
+          slug: frontmatter.parsed.slug || null,
           metadata: {
             update: {
               name: parsedRecipe.title || "Untitled Recipe",
