@@ -15,7 +15,12 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
-      <script defer src="https://cloud.umami.is/script.js" data-website-id="14cdd8d8-a746-47a6-b05c-c5484b0d8100"></script>
+      <script 
+        defer 
+        src="/scripts/umami.js" 
+        data-website-id="14cdd8d8-a746-47a6-b05c-c5484b0d8100"
+        data-host-url="https://cloud.umami.is"
+      ></script>
       <body>
         <Providers>
           {children}
