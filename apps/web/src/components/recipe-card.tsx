@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { type RouterOutputs } from "@/trpc/react";
 
-type RecipeRes = RouterOutputs["recipe"]["getAll"][number];
+type RecipeRes = RouterOutputs["recipe"]["getAll"][number] | RouterOutputs["admin"]["getDashboardData"]["recentRecipes"][number]
 
 const BaseCard = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
   <div className={`flex flex-col prose w-full aspect-w-1 aspect-h-1 min-h-full rounded-lg overflow-hidden sm:aspect-w-2 sm:aspect-h-3 shadow-sm p-4 bg-neutral-50 border-gray-200 dark:border-neutral-300/10 dark:bg-primary border border-blood/10 ${className}`}>

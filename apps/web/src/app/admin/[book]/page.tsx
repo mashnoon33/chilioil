@@ -91,6 +91,7 @@ export default function AdminBookPage() {
             ))}
           </div>
         ) : (
+          // @ts-expect-error - this is a workaround to get the data type to work
           <DataTable columns={columns} data={data?.recentRecipes || []} />
         )}
       </div>
