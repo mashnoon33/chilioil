@@ -8,10 +8,10 @@ interface IngredientsProps {
 
 export const Ingredients: React.FC<IngredientsProps> = ({ ingredients }) => {
   return (
-    <div className="px-4">
+    <div className="py-1">
       {ingredients.map((ingredient, index) => (
         <div
-          className="flex flex-row border-b last:border-none border-gray-300 dark:border-neutral-300/10 justify-between py-2 min-w-1/2"
+          className="flex flex-row border-b last:border-none border-gray-300 dark:border-neutral-300/10 justify-between px-4 py-2 min-w-1/2"
           key={`${ingredient.name}-${index}`}
         >
           <div className="font-medium flex">

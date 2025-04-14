@@ -21,8 +21,8 @@ export function Header() {
         <FiSun fontSize="24px" />
         {/* <ThemeSwitch /> */}
       </div>
-      <Link href="/" className="text-2xl font-black text-brand text-purple-800">
-        Chilioil
+      <Link href="/" className="text-2xl font-black text-brand ">
+        cheflog
       </Link>
       {/* {router.pathname.endsWith('admin') ? (3
       <button

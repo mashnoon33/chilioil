@@ -24,6 +24,8 @@ interface CreateBookDialogProps {
 
 export function CreateBookDialog({  open, onOpenChange }: CreateBookDialogProps) {
   const [slug, setSlug] = useState("");
+  const [name, setName] = useState("");
+  const [markdown, setMarkdown] = useState("");
   const router = useRouter();
   const utils = api.useUtils();
   const { mutate: createBook, isPending } = api.book.create.useMutation({
@@ -40,7 +42,7 @@ export function CreateBookDialog({  open, onOpenChange }: CreateBookDialogProps)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    createBook({ slug });
+    createBook({ slug, name, markdown });
   };
 
   return (
@@ -56,6 +58,16 @@ export function CreateBookDialog({  open, onOpenChange }: CreateBookDialogProps)
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
+              <label htmlFor="name">Book Name</label>
+              <Input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="My Awesome Book"
+                required
+              />
+            </div>
+            <div className="grid gap-2">
               <label htmlFor="slug">Book Slug</label>
               <Input
                 id="slug"
@@ -68,6 +80,16 @@ export function CreateBookDialog({  open, onOpenChange }: CreateBookDialogProps)
               <p className="text-sm text-muted-foreground">
                 Use lowercase letters, numbers, and hyphens only. No spaces allowed.
               </p>
+            </div>
+            <div className="grid gap-2">
+              <label htmlFor="markdown">Description</label>
+              <textarea
+                id="markdown"
+                value={markdown}
+                onChange={(e) => setMarkdown(e.target.value)}
+                placeholder="A brief description of your book..."
+                className="min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              />
             </div>
           </div>
           <DialogFooter>

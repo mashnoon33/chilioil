@@ -5,8 +5,8 @@ import { type Metadata } from "next";
 
 import { Providers } from "@/app/provider";
 export const metadata: Metadata = {
-  title: "Chilioil",
-  description: "Chilioil",
+  title: "cheflog",
+  description: "cheflog",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 

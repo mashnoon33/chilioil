@@ -11,7 +11,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
+import ScrollIntoViewIfNeeded from "react-scroll-into-view-if-needed";
 export default function RecipeVersionLayout({
     children,
 }: {
@@ -31,9 +31,13 @@ export default function RecipeVersionLayout({
                 {children}
             </div>
             {recipe && recipe.length > 0 && (
-                <FloatingActionButton className="min-h-10">
-                    <div>
-                        {recipe.map(r => (
+                <FloatingActionButton >
+                    {recipe.map(r => (
+                        <ScrollIntoViewIfNeeded active={version === r.version} options={{
+                            block: 'center',
+                            behavior: 'smooth',
+                            scrollMode: 'if-needed'
+                        }}>
                             <div
                                 key={r.version}
                                 className={`group p-3 cursor-pointer border border-neutral-900 hover:bg-neutral-800 bg-transparent rounded-md transition-colors mb-2 ${version === r.version ? " bg-gradient-to-r from-green-900/70 to-red-900/70" : ""}`}
@@ -70,8 +74,9 @@ export default function RecipeVersionLayout({
                                     </DropdownMenu>
                                 </div>
                             </div>
-                        ))}
-                    </div>
+                        </ScrollIntoViewIfNeeded>
+
+                    ))}
                 </FloatingActionButton>
             )}
         </div>

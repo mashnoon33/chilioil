@@ -299,6 +299,7 @@ export const recipeRouter = createTRPCRouter({
             update: {
               name: parsedRecipe.title || "Untitled Recipe",
               summary: parsedRecipe.description || "",
+              cuisine: frontmatter.parsed.cuisine || [],
             },
           },
           history: {

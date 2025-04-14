@@ -5,7 +5,7 @@ export default async function Home() {
     <HydrateClient>
       <main className="flex min-h-screen flex-col">
         <div className="container m-auto py-8 text-4xl font-bold">
-            ChiliOil
+            cheflog
         </div>
       </main>
     </HydrateClient>

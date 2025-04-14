@@ -66,7 +66,7 @@ const RangeSlider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Roo
           <SliderPrimitive.Thumb className="block h-5 w-5 cursor-pointer rounded-full border-2 border-red-500 bg-red-800 ring-offset-neutral-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50" />
           <SliderPrimitive.Thumb className="block h-5 w-5 cursor-pointer rounded-full border-2 border-green-500 bg-green-800 ring-offset-neutral-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50" />
         </SliderPrimitive.Root>
-        <div className="flex justify-between">
+        <div className="flex mt-2 justify-between">
           {Array.from({ length: max - min + 1 }).map((_, i) => (
             <div key={i} className="text-xs text-neutral-400">{prefix}{min + i}</div>
           ))}
