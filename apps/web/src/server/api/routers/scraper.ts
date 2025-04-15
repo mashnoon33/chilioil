@@ -9,7 +9,7 @@ export const scraperRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input }) => {
-      const response = await fetch("https://chillioil-flask.vercel.app/scrape-recipe", {
+      const response = await fetch("https://parser.cheflog.app/scrape-recipe", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

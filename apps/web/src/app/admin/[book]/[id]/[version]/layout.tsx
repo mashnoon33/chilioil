@@ -33,7 +33,7 @@ export default function RecipeVersionLayout({
             {recipe && recipe.length > 0 && (
                 <FloatingActionButton >
                     {recipe.map(r => (
-                        // @ts-expect-error - ref isnt needed I believe
+                        // @ts-expect-error - this is a workaround to get the data type to work
                         <ScrollIntoViewIfNeeded key={r.version} active={version === r.version} options={{
                             block: 'center',
                             behavior: 'smooth',

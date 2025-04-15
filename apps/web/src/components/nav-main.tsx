@@ -23,7 +23,7 @@ export function NavMain({
     <SidebarMenu className="px-2">
       {items.map((item) => (
         <SidebarMenuItem key={item.title}>
-          <SidebarMenuButton asChild  isActive={pathname.endsWith(item.url)}>
+          <SidebarMenuButton asChild  isActive={pathname === item.url}>
             <Link href={item.url}>
               <item.icon />
               <span>{item.title}</span>

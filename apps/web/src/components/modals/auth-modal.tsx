@@ -24,7 +24,6 @@ export function AuthModal() {
         <Dialog open={open} onOpenChange={() => { }}>
             <DialogContent className="sm:max-w-md">
                 <div className={cn("flex flex-col gap-6")}>
-                    <form>
                         <div className="flex flex-col gap-6">
                             <div className="flex flex-col items-center gap-2">
                                 <a
@@ -61,7 +60,6 @@ export function AuthModal() {
                                 </Button>
                             </div>
                         </div>
-                    </form>
                     <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
                         By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
                         and <a href="#">Privacy Policy</a>.

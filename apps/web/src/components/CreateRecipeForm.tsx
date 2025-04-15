@@ -157,31 +157,13 @@ export function CreateRecipeForm({ mode = 'create', initialRecipe, bookId }: Cre
                                 disabled={isCreating || isUpdating}
                             >
                                 {(isCreating || isUpdating) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                {mode === 'create' ? 'Save as Draft' : 'Update Draft'}
+                                {mode === 'create' ? 'Draft' : 'Update Draft'}
                             </Button>
                         }
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button 
-                                    size="icon" 
-                                    variant="ghost" 
-                                    className='text-neutral-300 hover:text-neutral-600 hover:bg-neutral-100 rounded-full'
-                                    disabled={isScraping}
-                                >
-                                    <MoreVertical className="h-4 w-4" />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="start" side='top'>
-                                <DropdownMenuItem onClick={handlePasteUrl} disabled={isScraping}>
-                                    {isScraping ? (
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    ) : (
-                                        <Link className="mr-2 h-4 w-4" />
-                                    )}
-                                    <span>Paste URL</span>
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                        <Button variant="outline" onClick={handlePasteUrl} disabled={isScraping}>
+                            {isScraping ? <Loader2 className=" h-4 w-4 animate-spin" /> : <Link className=" h-4 w-4" />}
+                        </Button>
+                        
                     </div>
                 </div>
             </FloatingActionButton>

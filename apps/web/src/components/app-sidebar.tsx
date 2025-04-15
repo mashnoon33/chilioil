@@ -13,7 +13,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { api } from "@/trpc/react"
-import { Home, Plus, BookOpen } from "lucide-react"
+import { Home, Plus, BookOpen, ArrowUpRight } from "lucide-react"
 import { useEffect } from "react"
 import { BookSwitcher } from "@/components/book-switcher"
 import { useRouter, useParams } from "next/navigation";
@@ -51,6 +51,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       url: `/admin/${activeBookId}/create`,
       icon: Plus,
     },
+    {
+      title: "Public site",
+      url: `/${activeBookId}`,
+      icon: ArrowUpRight,
+    }
   ]
   const recipeItems = recipes.map((recipe) => ({
     id: recipe.id,
