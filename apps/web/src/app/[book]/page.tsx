@@ -1,9 +1,8 @@
-import Link from "next/link";
-import { api, staticApi } from "@/trpc/server";
 import { Button } from "@/components/ui/button";
-import { MdPlusOne } from "react-icons/md";
 import { RouterOutputs } from "@/trpc/react";
-import ReactMarkdown from "react-markdown";
+import { api, staticApi } from "@/trpc/server";
+import Link from "next/link";
+import { MdPlusOne } from "react-icons/md";
 
 export async function generateStaticParams() {
   const books = await staticApi.book.getAllPublic();
@@ -18,7 +17,7 @@ const BaseCard = ({ children, className = "" }: { children: React.ReactNode; cla
   </div>
 );
 
-type Recipe = NonNullable<RouterOutputs["recipe"]["getById"]>;
+type Recipe = NonNullable<RouterOutputs["recipe"]["getAllPublic"]>[number];
 
 const RecipeCard = ({ recipe, currentRoute }: { recipe: Recipe; currentRoute: string }) => (
   <Link href={`${currentRoute}/${recipe.slug ?? recipe.id}`}>

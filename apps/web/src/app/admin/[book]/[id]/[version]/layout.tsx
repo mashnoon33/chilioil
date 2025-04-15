@@ -33,7 +33,8 @@ export default function RecipeVersionLayout({
             {recipe && recipe.length > 0 && (
                 <FloatingActionButton >
                     {recipe.map(r => (
-                        <ScrollIntoViewIfNeeded active={version === r.version} options={{
+                        // @ts-expect-error - ref isnt needed I believe
+                        <ScrollIntoViewIfNeeded key={r.version} active={version === r.version} options={{
                             block: 'center',
                             behavior: 'smooth',
                             scrollMode: 'if-needed'

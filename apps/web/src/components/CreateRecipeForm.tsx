@@ -12,12 +12,12 @@ import { useRouter } from 'next/navigation';
 import { useState, useRef } from 'react';
 import { toast } from 'sonner';
 import { FloatingActionButton } from './ui/floating-action-button';
-import { MoreVertical, Link } from "lucide-react";
+import { MoreVertical, Link, Loader2 } from "lucide-react";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toRecipeMarkdown } from "@/app/types/scraper";
 import type { RecipeEditorRef } from "@/components/editor/monaco";
@@ -26,7 +26,7 @@ type RouterOutputs = inferRouterOutputs<AppRouter>;
 type Recipe = RouterOutputs["recipe"]["getById"];
 
 interface CreateRecipeFormProps {
-    mode?: 'create' | 'edit';
+    mode?: 'create' | 'edit' | 'draft';
     initialRecipe?: Recipe;
     bookId: string;
 }
@@ -86,23 +86,38 @@ export function CreateRecipeForm({ mode = 'create', initialRecipe, bookId }: Cre
         }
     };
 
-    const handlePublish = async () => {
+    const handlePublish =  (draft: boolean = false) => {
         try {
-            if (mode === 'edit' && initialRecipe) {
-                await updateRecipe({
+            if ((mode === 'edit' || mode === 'draft') && initialRecipe) {
+                updateRecipe({
                     id: initialRecipe.id,
                     bookId: initialRecipe.bookId,
                     markdown: recipe,
+                    draft: draft,
                 });
             } else {
-                await createRecipe({
+                createRecipe({
                     markdown: recipe,
                     bookId: bookId,
+                    draft: draft,
                 });
             }
         } catch (error) {
         }
     };
+    const primaryButtonText = (() => {
+        switch (mode) {
+            case 'create':
+                return 'Publish';
+            case 'edit':
+                return 'Update';
+            case 'draft':
+                return 'Publish';
+            default:
+                return 'Publish';
+        }
+    })();
+
     return (
         <ResizablePanelGroup direction="horizontal" className='h-full'>
             <ResizablePanel defaultSize={30}>
@@ -118,25 +133,51 @@ export function CreateRecipeForm({ mode = 'create', initialRecipe, bookId }: Cre
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize={70} >
                 {/* Preview Section */}
-                <div className="h-screen flex-1 flex flex-col overflow-scroll p-6 bg-white">                   
-                     <RecipeComponent recipe={parseRecipe(recipe)} version={initialRecipe?.version ?? 1} />
+                <div className="h-screen flex-1 flex flex-col overflow-scroll p-6 bg-white">
+                    <RecipeComponent recipe={parseRecipe(recipe)} version={initialRecipe?.version ?? 1} />
                 </div>
             </ResizablePanel>
             <FloatingActionButton>
                 <div className='flex flex-col gap-2'>
-                    <div className="text-sm text-neutral-400 mb-5">{mode === 'create' ? 'Publish' : 'Update'} recipe</div>
+                    <div className="text-sm text-neutral-400 mb-5">Edit I guess</div>
                     <div className='flex flex-row gap-2 justify-end'>
-                        <Button variant="default" className='bg-green-700 hover:bg-green-600' onClick={handlePublish}>{mode === 'create' ? 'Publish' : 'Update'}</Button>
-                        <Button variant="outline" onClick={() => {/* TODO: Save as draft */ }}>Save as Draft</Button>
-                        <DropdownMenu >
+                        <Button 
+                            variant="default" 
+                            className='bg-green-700 hover:bg-green-600' 
+                            onClick={() => handlePublish()}
+                            disabled={isCreating || isUpdating}
+                        >
+                            {(isCreating || isUpdating) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            {primaryButtonText}
+                        </Button>
+                        {
+                            (mode === 'create' || mode === 'draft') &&          <Button 
+                                variant="outline" 
+                                onClick={() => handlePublish(true)}
+                                disabled={isCreating || isUpdating}
+                            >
+                                {(isCreating || isUpdating) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                {mode === 'create' ? 'Save as Draft' : 'Update Draft'}
+                            </Button>
+                        }
+                        <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button size="icon" variant="ghost" className='text-neutral-300 hover:text-neutral-600 hover:bg-neutral-100 rounded-full' >
+                                <Button 
+                                    size="icon" 
+                                    variant="ghost" 
+                                    className='text-neutral-300 hover:text-neutral-600 hover:bg-neutral-100 rounded-full'
+                                    disabled={isScraping}
+                                >
                                     <MoreVertical className="h-4 w-4" />
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="start" side='top'> 
+                            <DropdownMenuContent align="start" side='top'>
                                 <DropdownMenuItem onClick={handlePasteUrl} disabled={isScraping}>
-                                    <Link className="mr-2 h-4 w-4" />
+                                    {isScraping ? (
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    ) : (
+                                        <Link className="mr-2 h-4 w-4" />
+                                    )}
                                     <span>Paste URL</span>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>

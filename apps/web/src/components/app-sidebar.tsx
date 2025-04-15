@@ -17,7 +17,7 @@ import { Home, Plus, BookOpen } from "lucide-react"
 import { useEffect } from "react"
 import { BookSwitcher } from "@/components/book-switcher"
 import { useRouter, useParams } from "next/navigation";
-import { Badge } from "./ui/badge"
+
 
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -55,9 +55,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const recipeItems = recipes.map((recipe) => ({
     id: recipe.id,
     bookId: recipe.bookId,
-    name: recipe.metadata?.name || "Untitled Recipe", 
+    name: recipe.metadata?.name || "Untitled Recipe",
     url: `/admin/${activeBookId}/${recipe.id}`,
-    latestVersion: recipe.version || 1
+    latestVersion: recipe.version || 1,
+    draft: recipe.draft,
+    public: recipe.public
   }))
 
   const handleBookChange = (bookId: string) => {

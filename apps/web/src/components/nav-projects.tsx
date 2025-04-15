@@ -10,6 +10,7 @@ import {
   Clock,
   History,
   DiffIcon,
+  Lock
 } from "lucide-react"
 import { useRouter, usePathname } from "next/navigation"
 
@@ -47,6 +48,8 @@ export function NavRecipies({
     url: string
     icon?: ReactElement
     latestVersion: number
+    public: boolean
+    draft: boolean
   }[]
 }) {
   const { isMobile } = useSidebar()
@@ -68,6 +71,10 @@ export function NavRecipies({
           <SidebarMenuItem key={item.name} >
             <SidebarMenuButton asChild isActive={pathname.includes(item.url)}>
               <div className="cursor-pointer" onClick={() => router.push(item.url)}>
+                <div className="flex gap-2 items-center">
+                  {!item.public && <Lock className="h-3 w-3 text-muted-foreground" />}
+                   <div className={`h-2 w-2 rounded-full ${!item.draft ? "bg-green-500" : "bg-yellow-500"}`} />
+                </div>
                 {item.icon}
                 <span>{item.name}</span>
               </div>

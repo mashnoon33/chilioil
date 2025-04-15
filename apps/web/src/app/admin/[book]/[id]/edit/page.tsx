@@ -23,5 +23,5 @@ export default function EditRecipePage() {
         return <div>Recipe not found</div>;
     }
 
-    return <CreateRecipeForm mode="edit" initialRecipe={recipe} bookId={params.book as string} />;
+    return <CreateRecipeForm mode={recipe.draft ? 'draft' : 'edit'} initialRecipe={recipe} bookId={params.book as string} />;
 } 

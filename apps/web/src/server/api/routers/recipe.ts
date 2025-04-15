@@ -4,7 +4,7 @@ import { parseFrontmatter } from "@/components/editor/monaco/faux-language-serve
 import {
   createTRPCRouter,
   protectedProcedure,
-  publicProcedure
+  publicProcedure,
 } from "@/server/api/trpc";
 import { parseRecipe, Recipe } from "@repo/parser";
 import type { PrismaClient } from "@prisma/client";
@@ -23,10 +23,12 @@ async function handleRecipeIngredients(
   ctx: Context,
   recipeId: string,
   parsedRecipe: Recipe,
-  metadataId: string | undefined
+  metadataId: string | undefined,
 ) {
   // Extract ingredients from parsed recipe
-  const ingredients = parsedRecipe.sections.flatMap((section) => section.ingredients);
+  const ingredients = parsedRecipe.sections.flatMap((section) =>
+    section.ingredients
+  );
 
   // Create or link ingredients
   for (const ing of ingredients) {
@@ -75,34 +77,41 @@ const recipeSelect = {
   id: true,
   markdown: true,
   version: true,
+  draft: true,
   public: true,
   slug: true,
+  updatedAt: true,
+  createdAt: true,
   bookId: true,
   ingredients: {
     where: {
-      important: true
+      important: true,
     },
     select: {
       ingredient: {
         select: {
           id: true,
-          name: true
-        }
+          name: true,
+        },
       },
       quantity: true,
       unit: true,
-      description: true
-    }
+      description: true,
+    },
   },
   metadata: true,
 };
 
 // Common recipe query function
-async function getRecipes(ctx: Context, bookId: string, publicOnly: boolean = false) {
+async function getRecipes(
+  ctx: Context,
+  bookId: string,
+  publicOnly: boolean = false,
+) {
   return await ctx.db.recipe.findMany({
-    where: { 
+    where: {
       bookId,
-      ...(publicOnly ? { public: true } : {})
+      ...(publicOnly ? { public: true } : {}),
     },
     select: {
       id: true,
@@ -110,37 +119,43 @@ async function getRecipes(ctx: Context, bookId: string, publicOnly: boolean = fa
       version: true,
       public: true,
       bookId: true,
+      draft: true,
       slug: true,
       ingredients: {
         where: {
-          important: true
+          important: true,
         },
         select: {
           ingredient: {
             select: {
               id: true,
-              name: true
-            }
+              name: true,
+            },
           },
           quantity: true,
           unit: true,
-          description: true
-        }
+          description: true,
+        },
       },
-      metadata: true
-    }
+      metadata: true,
+    },
   });
 }
 
 // Common recipe by id query function
-async function getRecipeById(ctx: Context, id: string, bookId: string, publicOnly: boolean = false) {
+async function getRecipeById(
+  ctx: Context,
+  id: string,
+  bookId: string,
+  publicOnly: boolean = false,
+) {
   const whereClause = {
     bookId,
     ...(publicOnly ? { public: true } : {}),
     OR: [
       { id },
-      { slug: id }
-    ]
+      { slug: id },
+    ],
   };
 
   return await ctx.db.recipe.findFirst({
@@ -186,7 +201,9 @@ export const recipeRouter = createTRPCRouter({
     .input(z.object({ id: z.string(), version: z.number() }))
     .query(async ({ ctx, input }) => {
       return await ctx.db.recipeHistory.findUnique({
-        where: { recipeId_version: { recipeId: input.id, version: input.version } },
+        where: {
+          recipeId_version: { recipeId: input.id, version: input.version },
+        },
       });
     }),
 
@@ -195,7 +212,8 @@ export const recipeRouter = createTRPCRouter({
       z.object({
         markdown: z.string(),
         bookId: z.string(),
-      })
+        draft: z.boolean().optional().default(false),
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       // Parse the markdown to extract metadata
@@ -206,6 +224,7 @@ export const recipeRouter = createTRPCRouter({
         data: {
           markdown: input.markdown,
           bookId: input.bookId,
+          draft: input.draft,
           slug: frontmatter.parsed.slug || null,
           metadata: {
             create: {
@@ -228,13 +247,19 @@ export const recipeRouter = createTRPCRouter({
       });
 
       try {
-        await handleRecipeIngredients(ctx, recipe.id, parsedRecipe, recipe.metadata?.id);
+        await handleRecipeIngredients(
+          ctx,
+          recipe.id,
+          parsedRecipe,
+          recipe.metadata?.id,
+        );
       } catch (error) {
         console.error("Error adding ingredients:", error);
       }
-    
+
       return recipe;
     }),
+
 
   update: protectedProcedure
     .input(
@@ -242,7 +267,8 @@ export const recipeRouter = createTRPCRouter({
         id: z.string(),
         bookId: z.string(),
         markdown: z.string(),
-      })
+        draft: z.boolean().optional().default(false),
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       // Verify ownership
@@ -254,18 +280,18 @@ export const recipeRouter = createTRPCRouter({
         select: {
           book: {
             select: {
-              userId: true
-            }
+              userId: true,
+            },
           },
           history: {
             orderBy: {
-              version: 'desc'
+              version: "desc",
             },
             take: 1,
             select: {
-              version: true
-            }
-          }
+              version: true,
+            },
+          },
         },
       });
 
@@ -295,6 +321,7 @@ export const recipeRouter = createTRPCRouter({
           markdown: input.markdown,
           version: latestVersion + 1,
           slug: frontmatter.parsed.slug || null,
+          draft: input.draft,
           metadata: {
             update: {
               name: parsedRecipe.title || "Untitled Recipe",
@@ -316,7 +343,12 @@ export const recipeRouter = createTRPCRouter({
       });
 
       try {
-        await handleRecipeIngredients(ctx, input.id, parsedRecipe, updatedRecipe.metadata?.id);
+        await handleRecipeIngredients(
+          ctx,
+          input.id,
+          parsedRecipe,
+          updatedRecipe.metadata?.id,
+        );
       } catch (error) {
         console.error("Error updating ingredients:", error);
       }
