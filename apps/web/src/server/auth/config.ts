@@ -46,7 +46,6 @@ export const authConfig: NextAuthConfig = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
-  // @ts-expect-error - this is a workaround to get the data type to work
   adapter: PrismaAdapter(db),
   callbacks: {
     session: ({ session, user }) => ({
