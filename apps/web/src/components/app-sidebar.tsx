@@ -25,7 +25,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const router = useRouter()
   const { data: books = [] } = api.book.getAll.useQuery()
   const [activeBookId, setActiveBookId] = React.useState("")
-  const { data: recipes = [] } = api.recipe.getAll.useQuery({ bookId: activeBookId }, {
+  const { data: recipes = [] } = api.recipe.getAll.useQuery({ bookId: activeBookId, draft: true }, {
     enabled: !!activeBookId
   })
   const params = useParams()

@@ -107,11 +107,12 @@ async function getRecipes(
   ctx: Context,
   bookId: string,
   publicOnly: boolean = false,
+  draft: boolean = false,
 ) {
   return await ctx.db.recipe.findMany({
     where: {
       bookId,
-      draft: false,
+      ...(draft ? {  } : { draft: false }),
       ...(publicOnly ? { public: true } : {}),
     },
     select: {
@@ -170,9 +171,9 @@ async function getRecipeById(
 
 export const recipeRouter = createTRPCRouter({
   getAll: protectedProcedure
-    .input(z.object({ bookId: z.string() }))
+    .input(z.object({ bookId: z.string(), draft: z.boolean().optional().default(false) }))
     .query(async ({ ctx, input }) => {
-      return getRecipes(ctx, input.bookId);
+      return getRecipes(ctx, input.bookId, undefined, input.draft);
     }),
 
   getAllPublic: publicProcedure
