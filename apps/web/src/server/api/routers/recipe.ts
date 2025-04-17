@@ -111,6 +111,7 @@ async function getRecipes(
   return await ctx.db.recipe.findMany({
     where: {
       bookId,
+      draft: false,
       ...(publicOnly ? { public: true } : {}),
     },
     select: {
@@ -138,6 +139,9 @@ async function getRecipes(
         },
       },
       metadata: true,
+    },
+    orderBy: {
+      createdAt: "desc",
     },
   });
 }

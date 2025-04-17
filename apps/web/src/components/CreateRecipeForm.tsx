@@ -1,26 +1,21 @@
 "use client"
+import { toRecipeMarkdown } from "@/app/types/scraper";
+import type { RecipeEditorRef } from "@/components/editor/monaco";
 import RecipeEditor from '@/components/editor/monaco';
 import { defaultRecipe } from '@/components/editor/monaco/const';
 import { RecipeComponent } from '@/components/recipie';
 import { Button } from '@/components/ui/button';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
+import { useErrorStore } from "@/lib/stores/errorStore";
 import type { AppRouter } from '@/server/api/root';
 import { api } from '@/trpc/react';
 import { parseRecipe } from "@repo/parser";
 import type { inferRouterOutputs } from '@trpc/server';
+import { Link, Loader2 } from "lucide-react";
 import { useRouter } from 'next/navigation';
-import { useState, useRef } from 'react';
+import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { FloatingActionButton } from './ui/floating-action-button';
-import { MoreVertical, Link, Loader2 } from "lucide-react";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { toRecipeMarkdown } from "@/app/types/scraper";
-import type { RecipeEditorRef } from "@/components/editor/monaco";
 
 type RouterOutputs = inferRouterOutputs<AppRouter>;
 type Recipe = RouterOutputs["recipe"]["getById"];
@@ -36,13 +31,13 @@ export function CreateRecipeForm({ mode = 'create', initialRecipe, bookId }: Cre
     const editorRef = useRef<RecipeEditorRef>(null);
     const utils = api.useUtils();
     const router = useRouter();
+    const { errors } = useErrorStore();
 
     const { mutate: createRecipe, isPending: isCreating } = api.recipe.create.useMutation({
         onSuccess: async (data) => {
             await utils.recipe.getAll.invalidate();
             toast.success("Recipe published successfully!");
             router.push(`/admin/${bookId}/${data.id}`);
-
         },
         onError: (error) => {
             toast.error(`Failed to publish recipe: ${error.message}`);
@@ -138,14 +133,33 @@ export function CreateRecipeForm({ mode = 'create', initialRecipe, bookId }: Cre
                 </div>
             </ResizablePanel>
             <FloatingActionButton>
-                <div className='flex flex-col gap-2'>
-                    <div className="text-sm text-neutral-400 mb-5">Edit I guess</div>
+                <div className='flex flex-col gap-2 '>
+                    <div className="flex flex-row gap-1 items-center text-sm mb-2">
+                        <div className={`h-2 w-2 rounded-full ${errors.length > 0 ? "bg-red-500" : "bg-green-500"}`} />
+                        <span className={`font-medium ${errors.length > 0 ? "text-red-500" : "text-green-500"}`}>
+                            {errors.length > 0 ? 'Validation Errors' : 'No Validation Errors'}
+                        </span>
+                        {errors.length > 0 && (
+                            <span className="text-xs text-neutral-400">
+                                {errors.length}
+                            </span>
+                        )}
+                    </div>
+                    {errors.length > 0 && (
+                        <div className="flex flex-col gap-2 text-xs text-white font-mono ">
+                            {errors.map((error) => (
+                                <div key={error.message}>
+                                    {error.line ? `Line ${error.line}: ` : ''}{error.message}
+                                </div>
+                            ))}
+                        </div>
+                    )}
                     <div className='flex flex-row gap-2 justify-end'>
                         <Button 
                             variant="default" 
                             className='bg-green-700 hover:bg-green-600' 
                             onClick={() => handlePublish()}
-                            disabled={isCreating || isUpdating}
+                            disabled={isCreating || isUpdating || errors.length > 0}
                         >
                             {(isCreating || isUpdating) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                             {primaryButtonText}
@@ -163,7 +177,6 @@ export function CreateRecipeForm({ mode = 'create', initialRecipe, bookId }: Cre
                         <Button variant="outline" onClick={handlePasteUrl} disabled={isScraping}>
                             {isScraping ? <Loader2 className=" h-4 w-4 animate-spin" /> : <Link className=" h-4 w-4" />}
                         </Button>
-                        
                     </div>
                 </div>
             </FloatingActionButton>

@@ -3,6 +3,7 @@ import Editor, { OnMount, useMonaco } from '@monaco-editor/react';
 import type * as Monaco from 'monaco-editor';
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import { register, validate } from './faux-language-server';
+import { useErrorStore } from '@/lib/stores/errorStore';
 
 export interface RecipeEditorProps {
   initialValue?: string;
@@ -19,6 +20,7 @@ export const RecipeEditor = forwardRef<RecipeEditorRef, RecipeEditorProps>(({
 }, ref) => {
   const monaco = useMonaco();
   const editorRef = useRef<Monaco.editor.IStandaloneCodeEditor | null>(null);
+  const { clearErrors, setErrors } = useErrorStore();
 
   useImperativeHandle(ref, () => ({
     setValue: (value: string) => {
@@ -32,7 +34,9 @@ export const RecipeEditor = forwardRef<RecipeEditorRef, RecipeEditorProps>(({
     if (monaco) {
       register(monaco);
     }
-  }, [monaco]);
+    // Reset errors when component mounts
+    clearErrors();
+  }, [monaco, clearErrors]);
 
   const handleEditorDidMount: OnMount = (editor) => {
     editorRef.current = editor;
@@ -47,6 +51,9 @@ export const RecipeEditor = forwardRef<RecipeEditorRef, RecipeEditorProps>(({
     // Update markers with our custom validation
     const problems = validate(monaco, model);
     monaco.editor.setModelMarkers(model, 'recipe', problems);
+
+    // Count errors (only count Error severity, not Warning)
+    setErrors(problems);
   };
 
   const handleEditorChange = (value: string | undefined) => {
