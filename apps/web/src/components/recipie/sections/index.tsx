@@ -23,7 +23,7 @@ export const Section: React.FC<SectionProps> = ({ section }) => {
         </div>
 
         {/* Desktop/large screens */}
-        <div className="hidden @lg:flex gap-20">
+        <div className="hidden @lg:flex gap-5 xl:gap-10">
           <div className="flex-1">
             <div className="border border-gray-300 dark:border-neutral-300/10 bg-neutral-50 dark:bg-primary rounded-lg py-2">
               <Ingredients ingredients={section.ingredients} />
